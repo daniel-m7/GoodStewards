@@ -1,11 +1,5 @@
 # epics_and_use_cases.md
 
-**Click to view/copy content:**
-
-<details>
-<summary><code>docs/epics_and_use_cases.md</code></summary>
-
-```markdown
 # Epics and Use Cases
 
 ### Epic 1: Automate Tax Refund Claims
