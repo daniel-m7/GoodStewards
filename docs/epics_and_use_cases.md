@@ -1,5 +1,3 @@
-# epics_and_use_cases.md
-
 # Epics and Use Cases
 
 ### Epic 1: Automate Tax Refund Claims
