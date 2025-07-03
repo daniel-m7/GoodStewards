@@ -1,4 +1,4 @@
-# Project [Your Startup Name] - Non-Profit Sales Tax Refund Automation
+# GoodStewards.app - Non-Profit Sales Tax Refund Automation
 
 ## Summary
 
