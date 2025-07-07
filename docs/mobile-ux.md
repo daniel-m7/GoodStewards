@@ -43,9 +43,10 @@ This is the primary workflow for an authenticated, registered user. The design p
 2.  **Initiate Submission:** From the Dashboard, the user taps the primary "Add Receipts" button.
 3.  **Capture or Select:** The user is given two clear choices: take new photos with their device camera or select one or more existing receipt images from their photo library.
 4.  **Review Selections:** The user is shown thumbnails of all selected receipts, with details like total and sales tax for each. This allows them to spot and remove any accidental selections.
-5.  **Confirm Submission:** Before submitting, the user reviews a summary of the total expenses and sales tax for all receipts to be redeemed. They then tap a single "Submit" button to confirm. The app immediately begins submitting the images in the background.
-6.  **Receive Feedback:** The app provides immediate visual feedback that the submissions are processing. The user can safely navigate away or close the app; the process will continue.
-7.  **View Submission:** The new submissions appear at the top of their Dashboard list with a "Pending" status, confirming the action was successful and closing the loop.
+5.  **Choose Submission Type:** Before submitting, the user will be presented with a clear choice: "Reimburse" or "Donate".
+6.  **Confirm Submission:** After selecting the submission type, the user reviews a summary of the total expenses and sales tax for all receipts to be redeemed. They then tap a single "Submit" button to confirm. The app immediately begins submitting the images in the background.
+7.  **Receive Feedback:** The app provides immediate visual feedback that the submissions are processing. The user can safely navigate away or close the app; the process will continue.
+8.  **View Submission:** The new submissions appear at the top of their Dashboard list with a "Pending" status, confirming the action was successful and closing the loop.
 
 ## 4. Screen-by-Screen Breakdown & Mockups
 
@@ -100,8 +101,8 @@ This is the primary workflow for an authenticated, registered user. The design p
 ```
 
 ### Screen D: Review & Submit Screen
-*   **Purpose:** To act as a final confirmation step, allowing the user to review their selected images and the extracted totals before committing to the submission.
-*   **Key Elements:** A grid of image thumbnails with totals, a summary of the combined total and sales tax, a remove icon (X) on each, an "Add More" button, and a primary "Submit" button that dynamically counts the selections.
+*   **Purpose:** To act as a final confirmation step, allowing the user to review their selected images, the extracted totals, and mark the submission as a donation before committing.
+*   **Key Elements:** A grid of image thumbnails with totals, a summary of the combined total and sales tax, a checkbox to mark as a donation, a remove icon (X) on each, an "Add More" button, and a primary "Submit" button that dynamically counts the selections.
 
 ```ascii
 +-------------------------------------------------+
@@ -123,6 +124,9 @@ This is the primary workflow for an authenticated, registered user. The design p
 |  ---------------------------------------------  |
 |  Total: $85.00                                  |
 |  Sales Tax: $7.00                               |
+|                                                 |
+|  [ ] Mark as donation (no reimbursement)        |
+|  ---------------------------------------------  |
 +-------------------------------------------------+
 |  [      + Add More       ]                      |
 |  [    Submit 3 Receipts    ]                    |
