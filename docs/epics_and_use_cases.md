@@ -29,6 +29,15 @@
     *   The member can use their voice to provide a brief summary or description of the expenses being submitted, which the system transcribes and attaches as a note.
 
 *   **Use Case 2.3: Automated Reimbursement Workflow**
-    *   Once a member submits an expense, the treasurer is notified for approval via the web dashboard.
-    *   Upon approval, the payment is processed electronically to the member's pre-configured bank account.
+    *   Once a member submits an expense, the treasurer receives a mobile notification to approve the submission.
+    *   Upon approval, the treasurer can initiate payment via Zelle or issue a check in person.
+    *   The treasurer can upload an online banking payments export (CSV) with dates and paid amounts.
+    *   The system will attempt to automatically match submitted receipts with corresponding Zelle transaction IDs or check numbers from the CSV.
+    *   For any receipts that cannot be automatically matched, the treasurer can manually link them.
+    *   The system will store the payment confirmation alongside the receipt for audit purposes.
     *   The member receives status update notifications (e.g., "Submitted," "Approved," "Paid") at each stage of the process.
+
+*   **Use Case 2.4: Receipt as Donation**
+    *   The member can submit a receipt as a donation, not for reimbursement.
+    *   Sales tax is still captured for the organization's tax refund claim.
+    *   When the submission is approved, no payment is initiated to the member.

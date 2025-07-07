@@ -71,3 +71,103 @@ graph TD
     style F fill:#fce4ec,color:#000000
     style G fill:#e0f2f1,color:#000000
 ```
+
+### Data Model (PostgreSQL)
+
+This is a simplified, high-level schema.
+
+*   **`organizations`**
+    *   `id` (PK, UUID)
+    *   `name` (VARCHAR)
+    *   `created_at` (TIMESTAMPTZ)
+
+*   **`users`**
+    *   `id` (PK, UUID)
+    *   `organization_id` (FK to `organizations.id`)
+    *   `full_name` (VARCHAR)
+    *   `email` (VARCHAR, UNIQUE)
+    *   `role` (ENUM: 'member', 'treasurer')
+    *   `created_at` (TIMESTAMPTZ)
+
+*   **`receipts`**
+    *   `id` (PK, UUID)
+    *   `user_id` (FK to `users.id`)
+    *   `organization_id` (FK to `organizations.id`)
+    *   `image_url` (VARCHAR)
+    *   `vendor_name` (VARCHAR, nullable)
+    *   `purchase_date` (DATE, nullable)
+    *   `subtotal_amount` (DECIMAL, nullable)
+    *   `tax_amount` (DECIMAL, nullable)
+    *   `total_amount` (DECIMAL, nullable)
+    *   `status` (ENUM: 'processing', 'pending', 'approved', 'rejected', 'paid')
+    *   `is_donation` (BOOLEAN, default: false)
+    *   `payment_method` (ENUM: 'zelle', 'check', 'other', nullable)
+    *   `payment_reference` (VARCHAR, nullable) -- For Zelle transaction ID or check number
+    *   `payment_proof_url` (VARCHAR, nullable) -- URL to the Zelle confirmation or check image
+    *   `submitted_at` (TIMESTAMPTZ)
+    *   `approved_at` (TIMESTAMPTZ, nullable)
+
+*   **`payment_transactions`**
+    *   `id` (PK, UUID)
+    *   `organization_id` (FK to `organizations.id`)
+    *   `transaction_date` (DATE)
+    *   `amount` (DECIMAL)
+    *   `reference_id` (VARCHAR, nullable) -- Zelle ID, check number
+    *   `receipt_id` (FK to `receipts.id`, nullable) -- The matched receipt
+
+### Entity-Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    organizations {
+        UUID id PK
+        VARCHAR name
+        TIMESTAMPTZ created_at
+    }
+
+    users {
+        UUID id PK
+        UUID organization_id FK
+        VARCHAR full_name
+        VARCHAR email
+        ENUM role
+        TIMESTAMPTZ created_at
+    }
+
+    receipts {
+        UUID id PK
+        UUID user_id FK
+        UUID organization_id FK
+        VARCHAR image_url
+        VARCHAR vendor_name
+        DATE purchase_date
+        DECIMAL subtotal_amount
+        DECIMAL tax_amount
+        DECIMAL total_amount
+        ENUM status
+        BOOLEAN is_donation
+        ENUM payment_method
+        VARCHAR payment_reference
+        VARCHAR payment_proof_url
+        TIMESTAMPTZ submitted_at
+        TIMESTAMPTZ approved_at
+    }
+
+    payment_transactions {
+        UUID id PK
+        UUID organization_id FK
+        DATE transaction_date
+        DECIMAL amount
+        VARCHAR reference_id
+        UUID receipt_id FK
+    }
+
+    organizations ||--o{ users : "has"
+    organizations ||--o{ receipts : "has"
+    organizations ||--o{ payment_transactions : "has"
+
+    users ||--o{ receipts : "submits"
+
+    receipts }o--|| payment_transactions : "is reconciled by"
+
+```
