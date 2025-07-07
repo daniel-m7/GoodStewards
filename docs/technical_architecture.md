@@ -25,6 +25,10 @@ Between the two proposed stacks, we recommend the **Svelte-based stack** for its
 
 ### Core Architecture Components
 
+*   **Configuration:**
+    *   A `config/` directory in the root of the repository will hold static configuration files.
+    *   `nonrefundable_categories.json`: A JSON file containing a list of expense categories that are not eligible for a tax refund, based on Form E-585. This list will be loaded by the backend on startup and used to validate incoming receipt submissions.
+
 *   **Frontend (Web & Mobile):** SvelteKit for the Treasurer Web Dashboard, packaged with Capacitor for the Member Mobile App.
 *   **Backend API:** **FastAPI (Python)** or **Fastify (Node.js)**. Both are high-performance, modern frameworks perfect for building a robust API. FastAPI is an excellent choice if the team has Python experience, especially for future data science tasks.
 *   **AI Layer (Receipt Processing):**
