@@ -41,3 +41,8 @@
     *   The member can submit a receipt as a donation, not for reimbursement.
     *   Sales tax is still captured for the organization's tax refund claim.
     *   When the submission is approved, no payment is initiated to the member.
+
+*   **Use Case 2.5: Flexible User and Donation Handling**
+    *   Each organization shall have a default "Anonymous Donor" user for donations where the donor wishes to remain anonymous.
+    *   Each organization shall have a default "Unknown User" to allow treasurers to submit old receipts where the original member is not known.
+    *   The treasurer shall be able to create a new, simple user profile for a non-member donor by simply entering their name, allowing for proper record-keeping of one-time donations.
