@@ -33,7 +33,7 @@ Between the two proposed stacks, we recommend the **Svelte-based stack** for its
 *   **Backend API:** **FastAPI (Python)** or **Fastify (Node.js)**. Both are high-performance, modern frameworks perfect for building a robust API. FastAPI is an excellent choice if the team has Python experience, especially for future data science tasks.
 *   **AI Layer (Receipt Processing):**
     *   **BAML (Boundary-spanning Action and Meaning Language):** We will use BAML to define our AI functions for interacting with Google's Gemini 1.5 Pro.
-    *   **How it works:** BAML allows us to define the `ExtractReceiptData` function declaratively, specifying its inputs (image) and outputs (structured JSON with vendor, date, taxes, etc.). This separates the prompt engineering and LLM logic from the application code, making it highly maintainable and testable. The backend service will call the BAML-defined function, which then handles the API call to Gemini via a secure API key.
+    *   **How it works:** BAML allows us to define the `ExtractReceiptData` function declaratively, specifying its inputs (image) and outputs (structured JSON with vendor, date, taxes, expense_category, etc.). This separates the prompt engineering and LLM logic from the application code, making it highly maintainable and testable. The backend service will call the BAML-defined function, which then handles the API call to Gemini via a secure API key.
 *   **Authentication & Authorization:**
     *   **Protocol:** **OAuth 2.0** will be the core protocol for secure authentication.
     *   **Implementation:** **Auth.js** (formerly NextAuth.js, now framework-agnostic) is a highly recommended open-source library that simplifies implementing OAuth with various providers (Google, etc.) and managing sessions.
@@ -83,6 +83,10 @@ This is a simplified, high-level schema.
 *   **`organizations`**
     *   `id` (PK, UUID)
     *   `name` (VARCHAR)
+    *   `address` (VARCHAR)
+    *   `city` (VARCHAR)
+    *   `state` (VARCHAR)
+    *   `zip_code` (VARCHAR)
     *   `created_at` (TIMESTAMPTZ)
 
 *   **`users`**
@@ -103,6 +107,7 @@ This is a simplified, high-level schema.
     *   `subtotal_amount` (DECIMAL, nullable)
     *   `tax_amount` (DECIMAL, nullable)
     *   `total_amount` (DECIMAL, nullable)
+    *   `expense_category` (VARCHAR, nullable)
     *   `status` (ENUM: 'processing', 'pending', 'approved', 'rejected', 'paid')
     *   `is_donation` (BOOLEAN, default: false)
     *   `payment_method` (ENUM: 'zelle', 'check', 'other', nullable)
@@ -118,6 +123,12 @@ This is a simplified, high-level schema.
     *   `amount` (DECIMAL)
     *   `reference_id` (VARCHAR, nullable) -- Zelle ID, check number
     *   `receipt_id` (FK to `receipts.id`, nullable) -- The matched receipt
+
+*   **`receipt_tax_breakdowns`**
+    *   `id` (PK, UUID)
+    *   `receipt_id` (FK to `receipts.id`)
+    *   `tax_type` (ENUM: 'state', 'county', 'transit', 'food')
+    *   `amount` (DECIMAL)
 
 ### Entity-Relationship Diagram (ERD)
 
@@ -145,9 +156,11 @@ erDiagram
         VARCHAR image_url
         VARCHAR vendor_name
         DATE purchase_date
+        VARCHAR county
         DECIMAL subtotal_amount
         DECIMAL tax_amount
         DECIMAL total_amount
+        VARCHAR expense_category
         ENUM status
         BOOLEAN is_donation
         ENUM payment_method
@@ -166,6 +179,13 @@ erDiagram
         UUID receipt_id FK
     }
 
+    receipt_tax_breakdowns {
+        UUID id PK
+        UUID receipt_id FK
+        ENUM tax_type
+        DECIMAL amount
+    }
+
     organizations ||--o{ users : "has"
     organizations ||--o{ receipts : "has"
     organizations ||--o{ payment_transactions : "has"
@@ -173,5 +193,6 @@ erDiagram
     users ||--o{ receipts : "submits"
 
     receipts }o--|| payment_transactions : "is reconciled by"
+    receipts ||--|{ receipt_tax_breakdowns : "has"
 
 ```

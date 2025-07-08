@@ -1,12 +1,18 @@
-# GoodStewards.app - Non-Profit Sales Tax Refund Automation
+<h1 align="center">GoodStewards<br>
+<span style="font-size: 0.75em; font-style: italic;">a Non-Profit Sales Tax Refund Automation</span></h1>
 
 ## Summary
 
-This project is the foundation for a SaaS platform that automates the process for non-profit organizations in North Carolina to claim refunds on state, county, and transit sales and use taxes. By simplifying receipt submission and automating the generation of official tax forms, we empower non-profits to reclaim significant funds that are often left unclaimed due to tedious manual processes.
+This project is the foundation for a mobile and web platform that automates the process for non-profit organizations in North Carolina to claim refunds on state, county, and transit sales and use taxes. By simplifying receipt submission and automating the generation of official tax forms, we empower non-profits to reclaim significant funds that are often left unclaimed due to tedious manual processes.
 
-## Problem Statement
+## Problems and Challenges
 
-Non-profit organizations in North Carolina are entitled to a semi-annual sales tax refund. However, the process of collecting receipts, meticulously extracting data, and accurately filling out Form E-585 is complex and labor-intensive. This burden often falls on volunteer treasurers who are short on time, leading to a significant loss of funds for the organization. For a mid-sized non-profit, this can easily amount to thousands of dollars in unclaimed refunds annually. Furthermore, the associated manual expense reimbursement workflow is inefficient, requiring in-person meetings and manual check-writing.
+*   **Complex and Labor-Intensive Process:** The process of collecting receipts, meticulously extracting data, and accurately filling out Form E-585 (and the supplementary Form E-536R if expenses span multiple counties) is complex and time-consuming.
+*   **Volunteer Burden:** This burden often falls on volunteer treasurers who are short on time, leading to a significant loss of funds for the organization.
+*   **Inefficient Reimbursement:** The associated manual expense reimbursement workflow is inefficient, often requiring in-person meetings and manual check-writing.
+*   **Missing County Information:** Most receipts do not explicitly list the county as part of the vendor's address, yet the county is essential for accurately calculating the sales tax breakdown for the refund claim.
+*   **Manual Calculation for Members:** Members often have to manually sum up totals for multiple receipts, which is an error-prone and tedious task.
+*   **Fading Physical Receipts:** Physical receipts fade over time, becoming illegible and making it impossible to claim refunds for older expenses.
 
 ## Proposed Solution
 
@@ -27,3 +33,5 @@ For more detailed information, please see the documents in the `docs/` folder:
 *   [**Epics and Use Cases**](./docs/epics_and_use_cases.md)
 *   [**Success Metrics**](./docs/success_metrics.md)
 *   [**Technical Architecture**](./docs/technical_architecture.md)
+*   [**Mobile UX**](./docs/mobile-ux.md)
+*   [**E-585 Report Generation Design**](./docs/e585_report_generation_design.md)
