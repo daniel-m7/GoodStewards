@@ -175,8 +175,8 @@ This is the primary workflow for an authenticated, registered user. The design p
 ```
 
 ### Screen F: Member Selection (Treasurer Role)
-*   **Purpose:** To allow a treasurer to easily select the member for whom they are submitting receipts.
-*   **Key Elements:** A prominent search bar with type-ahead functionality, a list of matching members, and a button to import a member list from a CSV file.
+*   **Purpose:** To allow a treasurer to easily select the member or special user for whom they are submitting receipts.
+*   **Key Elements:** A prominent search bar with type-ahead functionality, a list of matching members, and options for special user types ("Anonymous Donor", "Unknown User"), and a button to create a new non-member donor.
 *   **Dynamic Behavior:** As the treasurer types in the search bar, the list below filters in real-time. Tapping a member's name selects them and proceeds to the receipt capture screen.
 
 ```ascii
@@ -193,10 +193,36 @@ This is the primary workflow for an authenticated, registered user. The design p
 |  Johnny Appleseed                    |
 |  ----------------------------------  |
 |                                      |
-|                                      |
+|  [  Anonymous Donor (for donations) ] |
+|  [  Unknown User (for old receipts) ] |
 |                                      |
 |  ----------------------------------  |
+|  [    + Create New Non-Member    ]   |
 |  [    + Import Members (CSV)     ]   |
++--------------------------------------+
+```
+
+### Screen G: Feedback Submission
+*   **Purpose:** To provide a simple and accessible way for users to submit feedback, bug reports, or feature requests.
+*   **Key Elements:** A dropdown or radio buttons for feedback type (Testimony, Bug Report, Feature Request), a multi-line text area for the message, and a submit button. Optionally, for bug reports, a checkbox to include system information.
+
+```ascii
++--------------------------------------+
+| < Back      Submit Feedback          |
++--------------------------------------+
+|                                      |
+|  Feedback Type:                      |
+|  [ Testimony v ]                     |
+|                                      |
+|  Your Message:                       |
+|  [                                ]  |
+|  [                                ]  |
+|  [                                ]  |
+|  [                                ]  |
+|                                      |
+|  [ ] Include system info (for bugs)  |
+|                                      |
+|  [         Submit Feedback        ]  |
 +--------------------------------------+
 ```
 
@@ -220,3 +246,16 @@ This describes the step-by-step process that occurs when a user hits the "Submit
     *   The worker process receives this JSON.
     *   It updates the corresponding record in the PostgreSQL receipts table with the extracted data and changes the status from `processing` to `pending` (awaiting treasurer approval).
 6.  **Frontend - UI Update:** The member's dashboard, upon being loaded or refreshed, will fetch the latest status for their submissions. For a more advanced experience, a WebSocket connection could push the status update (`processing` → `pending`) to the client in real-time.
+
+## 6. Core Technical Workflow: Feedback Submission
+
+This describes the step-by-step process for feedback submission.
+
+1.  **User Action:** User taps the "Submit Feedback" button.
+2.  **Frontend:** The mobile web app or web dashboard sends an HTTPS POST request to a secure backend API endpoint (e.g., `/api/feedback`). The request body includes the feedback type, message, and optionally, system information.
+3.  **Backend - Ingestion & Persistence:**
+    *   The API server receives the feedback data.
+    *   It validates the user's authentication token.
+    *   It creates a new record in a dedicated `feedback` table in PostgreSQL, storing the feedback type, message, user ID, and any captured system information.
+    *   It sends an email notification to the designated support inbox (e.g., `support@goodstewards.app`) with the feedback details.
+4.  **Frontend - Confirmation:** The app displays a confirmation message to the user, thanking them for their feedback.

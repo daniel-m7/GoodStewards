@@ -46,3 +46,15 @@
     *   Each organization shall have a default "Anonymous Donor" user for donations where the donor wishes to remain anonymous.
     *   Each organization shall have a default "Unknown User" to allow treasurers to submit old receipts where the original member is not known.
     *   The treasurer shall be able to create a new, simple user profile for a non-member donor by simply entering their name, allowing for proper record-keeping of one-time donations.
+
+### Epic 3: Enhance User Engagement & Support
+
+**As a user (member or treasurer), I need a simple way to provide feedback, report issues, or request new features so that my input can contribute to the improvement of the GoodStewards application.**
+
+*   **Use Case 3.1: In-App Feedback Submission**
+    *   The system shall provide a clear and accessible mechanism within both the mobile app and the web dashboard for users to submit feedback.
+    *   Users shall be able to categorize their feedback (e.g., Testimony, Bug Report, Feature Request).
+    *   Users shall be able to provide a free-text description of their feedback.
+    *   The system shall automatically capture relevant user and device information (e.g., user ID, app version, OS) with bug reports.
+    *   All feedback shall be persisted in a dedicated database table.
+    *   An email notification shall be sent to a designated support inbox upon new feedback submission.

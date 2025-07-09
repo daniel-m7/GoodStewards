@@ -21,9 +21,10 @@ This document outlines the plan for the public-facing MVP website for GoodStewar
 *   **Testimonials (`/testimonials`)**: Social proof from early adopters to build credibility.
 *   **About Us (`/about`)**: The story and mission behind GoodStewards.
 *   **Contact (`/contact`)**: A simple way for potential customers to get in touch.
+*   **Feedback (`/feedback`)**: A dedicated page for users to submit testimonies, bug reports, or feature requests.
 *   **Global Elements**:
     *   **Header**: Logo, navigation links, "Sign In" and "Sign Up" buttons.
-    *   **Footer**: Contact info, privacy policy, terms of service, social media links.
+    *   **Footer**: Contact info, privacy policy, terms of service, social media links, feedback link.
     *   **Call-to-Action (CTA)**: Prominent "Get Started for Free" or "Sign Up" buttons on every page.
 
 ## 4. User Experience (UX) Flow
@@ -48,6 +49,11 @@ The website journey should be simple and guide the user towards conversion with 
     1.  Lands on any page.
     2.  Navigates to the **Contact** page via the header or footer.
     3.  Fills out the contact form.
+
+*   **Path 4 (The Feedback Giver):**
+    1.  Lands on any page.
+    2.  Navigates to the **Feedback** page via the header or footer.
+    3.  Submits feedback.
 
 ## 5. Page Mockups & Content Strategy
 
@@ -85,7 +91,7 @@ The website journey should be simple and guide the user towards conversion with 
 |  [Logo Cloud of featured non-profits or partners]                    |
 |                                                                      |
 +----------------------------------------------------------------------+
-| Footer: [About] [Contact] [Privacy Policy] [Terms] [Social Links]    |
+| Footer: [About] [Contact] [Privacy Policy] [Terms] [Social Links] [Feedback] |
 +----------------------------------------------------------------------+
 ```
 
@@ -112,6 +118,36 @@ The website journey should be simple and guide the user towards conversion with 
     *   "For growing non-profits."
     *   Features: Unlimited receipts, 5 users, priority support, QuickBooks integration (future).
     *   Price: $29/month (with an annual discount).
+
+### Feedback Page (`/feedback`)
+
+*   **Purpose:** To provide a dedicated channel for users to submit various types of feedback.
+*   **Key Elements:** A form with fields for feedback type (Testimony, Bug Report, Feature Request), a text area for the message, and a submit button.
+
+```ascii
++----------------------------------------------------------------------+
+| Header: [Logo] [Features] [Pricing] [Testimonials] [Sign In] [Sign Up] |
++----------------------------------------------------------------------+
+|                                                                      |
+|  <h2>Submit Your Feedback</h2>                                       |
+|                                                                      |
+|  <p>We value your input! Please let us know your thoughts,           |
+|     report any issues, or suggest new features.</p>                  |
+|                                                                      |
+|  Feedback Type:                                                      |
+|  [ ] Testimony [ ] Bug Report [ ] Feature Request                    |
+|                                                                      |
+|  Your Message:                                                       |
+|  [                                                                ] |
+|  [                                                                ] |
+|  [                                                                ] |
+|                                                                      |
+|  [         Submit Feedback        ]                                  |
+|                                                                      |
++----------------------------------------------------------------------+
+| Footer: [About] [Contact] [Privacy Policy] [Terms] [Social Links] [Feedback] |
++----------------------------------------------------------------------+
+```
 
 ## 6. Technical Stack
 
