@@ -97,7 +97,7 @@ The website journey should be simple and guide the user towards conversion with 
 
 ### Features Page (`/features`)
 
-*   **Section 1: AI-Powered Receipt Scanning**
+*   **Section 1: AI-Powered Receipt Scanning** 
     *   Content: Detail the accuracy of the OCR, the types of receipts handled, and the security of the data.
     *   Visual: A side-by-side of a crumpled receipt and the clean, extracted data in the app.
 *   **Section 2: Automated Form Generation (E-585/E-536R)**

@@ -203,7 +203,7 @@ This is the primary workflow for an authenticated, registered user. The design p
 ```
 
 ### Screen G: Feedback Submission
-*   **Purpose:** To provide a simple and accessible way for users to submit feedback, bug reports, or feature requests.
+*   **Purpose:** To provide a simple and accessible way for users to submit feedback, bug reports, or feature requests. 
 *   **Key Elements:** A dropdown or radio buttons for feedback type (Testimony, Bug Report, Feature Request), a multi-line text area for the message, and a submit button. Optionally, for bug reports, a checkbox to include system information.
 
 ```ascii

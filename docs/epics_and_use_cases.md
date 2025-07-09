@@ -57,4 +57,4 @@
     *   Users shall be able to provide a free-text description of their feedback.
     *   The system shall automatically capture relevant user and device information (e.g., user ID, app version, OS) with bug reports.
     *   All feedback shall be persisted in a dedicated database table.
-    *   An email notification shall be sent to a designated support inbox upon new feedback submission.
+    *   An email notification shall be sent to a designated support inbox upon new feedback submission. 
