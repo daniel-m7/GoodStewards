@@ -58,3 +58,5 @@
     *   The system shall automatically capture relevant user and device information (e.g., user ID, app version, OS) with bug reports.
     *   All feedback shall be persisted in a dedicated database table.
     *   An email notification shall be sent to a designated support inbox upon new feedback submission. 
+
+General tax law principles and NCDOR practices suggest that refund claims may be subject to a statute of limitations, typically three years from the date the tax was paid or the due date of the return, whichever is later, as outlined in N.C. Gen. Stat. § 105-241.6. This could imply that nonprofits might be able to file refund claims for up to three years prior, covering six semiannual periods, provided the claims are within the statutory period and accompanied by proper documentation. 

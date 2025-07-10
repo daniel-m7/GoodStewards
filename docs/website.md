@@ -153,4 +153,4 @@ The website journey should be simple and guide the user towards conversion with 
 
 *   **Framework:** SvelteKit (to align with the web dashboard).
 *   **Styling:** Tailwind CSS for rapid, utility-first styling.
-*   **Hosting:** Vercel or Netlify for easy deployment, CI/CD, and a generous free tier.
+*   **Hosting:** Vercel for easy deployment, CI/CD, and a generous free tier.
