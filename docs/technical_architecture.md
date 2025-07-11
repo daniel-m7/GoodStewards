@@ -1,5 +1,8 @@
 # Technical Architecture
 
+[Project GitHub Repository](https://github.com/daniel-m7/GoodStewards)
+
+
 This document outlines the proposed technical architecture, emphasizing open-source technologies, cost-effective hosting, and a maintainable, scalable structure.
 
 ### Guiding Principles
