@@ -2,7 +2,7 @@
 
 ## 1. Document Purpose
 
-This document provides a comprehensive plan for the user experience (UX), user flows, and core technical workflow for the member-facing mobile web application. Its purpose is to guide design and development, ensuring a consistent and intuitive experience for all user roles.
+This document provides a comprehensive plan for the user experience (UX), user flows, and core technical workflow for the member-facing mobile web application. Its purpose is to guide design and development, ensuring a consistent and intuitive experience for all user roles. For a broader overview of project epics, use cases, and the overall roadmap, please refer to the [Project Overview](./epics_usecases_roadmap.md) document.
 
 ## 2. Target Personas
 
