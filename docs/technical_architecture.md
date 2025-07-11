@@ -317,18 +317,19 @@ This workflow describes how users submit receipts and how the system processes t
 
 ```mermaid
 graph TD
-    A[User (Member/Treasurer)] -- Upload Receipt Image --> B(Mobile/Web App)
-    B -- POST /api/receipts/upload --> C(Backend API)
-    C -- Pass Image --> D(BAML Runtime)
-    D -- Invoke Gemini 2.5 Pro --> E(Google AI Platform)
+
+    A["User (Member/Treasurer)"] -- Upload Receipt Image --> B["Mobile/Web App"]
+    B -- POST /api/receipts/upload --> C["Backend API"]
+    C -- Pass Image --> D["BAML Runtime"]
+    D -- Invoke Gemini 2.5 Pro --> E["Google AI Platform"]
     E -- Returns Structured JSON --> D
     D -- Returns Extracted Data --> C
-    C -- Validate Data & Category --> F{Is Valid & Refundable?}
-    F -- Yes --> G(Store Image in Cloudflare R2)
-    G --> H(Persist Data to PostgreSQL DB)
-    H --> I(Set Receipt Status: Pending)
+    C -- Validate Data & Category --> F{"Is Valid & Refundable?"}
+    F -- Yes --> G["Store Image in Cloudflare R2"]
+    G --> H["Persist Data to PostgreSQL DB"]
+    H --> I["Set Receipt Status: Pending"]
     I -- Success Response --> B
-    F -- No --> J(Return Error to User)
+    F -- No --> J["Return Error to User"]
 ```
 
 #### 2. Automated Form Generation Workflow (Use Case 1.2)
@@ -350,14 +351,14 @@ This workflow describes how treasurers generate official tax refund forms (E-585
 
 ```mermaid
 graph TD
-    A[Treasurer (Web App)] -- Select Refund Period --> B(Web App)
-    B -- POST /api/forms/e585/generate --> C(Backend API)
-    C -- Query Approved Receipts --> D(PostgreSQL DB)
-    D -- Returns Aggregated Data --> C
-    C -- Fill PDF Template --> E(PDF Generation Library)
-    E -- Generated PDF --> C
-    C -- Returns Form URL --> B
-    B -- Display/Download PDF --> A
+    A[Treasurer Web App] --> B[Web App]
+    B --> C[Backend API]
+    C --> D[PostgreSQL DB]
+    D --> C
+    C --> E[PDF Generation Library]
+    E --> C
+    C --> B
+    B --> A
 ```
 
 #### 3. Automated Reimbursement Workflow (Use Case 2.3)
