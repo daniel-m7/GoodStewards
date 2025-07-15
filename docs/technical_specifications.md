@@ -30,7 +30,7 @@ This section outlines the proposed technical architecture, emphasizing open-sour
     *   **Protocol:** **OAuth 2.0** will be the core protocol for secure authentication.
     *   **Implementation:** **Auth.js** (formerly NextAuth.js, now framework-agnostic) is a highly recommended open-source library that simplifies implementing OAuth with various providers (Google, etc.) and managing sessions.
     *   **Authorization:** A **Role-Based Access Control (RBAC)** system will be implemented in the backend. An authenticated user's token will contain their role (`treasurer` or `member`), which the API will use to protect endpoints and resources.
-*   **Database:** **PostgreSQL**. It is a powerful, open-source, and reliable relational database. The implementation will use **psycopg3** as the driver and **Alembic** for handling database migrations.
+*   **Database:** **PostgreSQL**. It is a powerful, open-source, and reliable relational database. The implementation will use **psycopg3** as the driver to execute raw SQL queries. Database migrations will be handled by a dedicated library like `yoyo-migrations` or by executing SQL scripts.
 *   **File Storage:** **Cloudflare R2**. This service offers S3-compatible APIs for storing receipt images but with significantly lower (or zero) egress fees, making it highly cost-effective compared to AWS S3.
 *   **PDF Generation:** A server-side library like `PyPDF2` (Python) or `pdf-lib` (Node.js) to programmatically fill the Form E-585 and E-536R PDF templates.
 
