@@ -136,13 +136,21 @@ This document provides a comprehensive overview of the GoodStewards project, enc
         *   **Assigned Roles:** TL, BE, FE, AI/ML, QA
 
     *   **Sprint 1.3: Core Backend, Data Layer & AI Integration**
-        *   **Task 1.3.1:** Define and implement database schema (PostgreSQL).
-        *   **Task 1.3.2:** Set up ORM (e.g., psycopg3 with Alembic for migrations).
-        *   **Task 1.3.3:** Implement data models for users, organizations, receipts, and extracted data.
-        *   **Task 1.3.4:** Set up FastAPI backend.
-        *   **Task 1.3.5:** Implement user/organization management (including OAuth2 for "Sign in with Apple/Google").
-        *   **Task 1.3.6:** Integrate BAML for AI-powered receipt data extraction.
-        *   **Task 1.3.7:** Implement Cloudflare R2 for image storage.
+        *   **Task 1.3.1: Project Scaffolding**
+            *   Define the monorepo structure (`backend`, `frontend`, `docs`).
+        *   **Task 1.3.2: Local Development Environment**
+            *   Set up Docker and `docker-compose.yml` for local development.
+            *   Add a PostgreSQL service to Docker Compose.
+            *   Add a Dockerfile for the backend service.
+        *   **Task 1.3.3: Database and Data Layer**
+            *   Define and implement the initial database schema in PostgreSQL.
+            *   Set up the data access layer using `psycopg3`.
+            *   Implement data models for users, organizations, receipts, etc.
+        *   **Task 1.3.4: Core Backend Services**
+            *   Set up the FastAPI backend application.
+            *   Implement user/organization management with OAuth2 support.
+            *   Integrate BAML for AI-powered receipt data extraction.
+            *   Implement Cloudflare R2 for image storage.
         *   **Assigned Roles:** BE, AI/ML, TL, AI-Agent (for code generation)
 
     *   **Sprint 1.4: Mobile App Development**
