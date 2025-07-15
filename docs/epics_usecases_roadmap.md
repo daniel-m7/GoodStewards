@@ -137,7 +137,7 @@ This document provides a comprehensive overview of the GoodStewards project, enc
 
     *   **Sprint 1.3: Core Backend, Data Layer & AI Integration**
         *   **Task 1.3.1:** Define and implement database schema (PostgreSQL).
-        *   **Task 1.3.2:** Set up ORM (e.g., SQLAlchemy with Alembic for migrations).
+        *   **Task 1.3.2:** Set up ORM (e.g., psycopg3 with Alembic for migrations).
         *   **Task 1.3.3:** Implement data models for users, organizations, receipts, and extracted data.
         *   **Task 1.3.4:** Set up FastAPI backend.
         *   **Task 1.3.5:** Implement user/organization management (including OAuth2 for "Sign in with Apple/Google").
