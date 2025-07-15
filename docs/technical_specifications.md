@@ -340,11 +340,11 @@ This workflow describes how treasurers generate official tax refund forms (E-585
 
 ```mermaid
 graph TD
-    A[Treasurer (Web App)] -- Select Refund Period --> B(Web App)
-    B -- POST /api/forms/generate-refund-package --> C(Backend API)
-    C -- Query Approved Receipts --> D(PostgreSQL DB)
+    A["Treasurer (Web App)"] -- Select Refund Period --> B["Web App"]
+    B -- POST /api/forms/generate-refund-package --> C["Backend API"]
+    C -- Query Approved Receipts --> D["PostgreSQL DB"]
     D -- Returns Aggregated Data --> C
-    C -- Fill PDF Templates --> E(PDF Generation Library)
+    C -- Fill PDF Templates --> E["PDF Generation Library"]
     E -- Generated E-585 & E-536R (if needed) --> C
     C -- Returns Form URLs --> B
     B -- Display/Download PDFs --> A
@@ -368,17 +368,17 @@ This workflow details how treasurers approve member expenses and reconcile payme
     *   Members receive notifications on the status of their submitted receipts (approved, paid).
 
 ```mermaid
-graph TD
-    A[Treasurer (Web App)] -- Review Pending Receipts --> B(Web App)
-    B -- PUT /api/receipts/{receipt_id}/approve --> C(Backend API)
-    C -- Update Receipt Status --> D(PostgreSQL DB)
-    D -- Notification to Member --> E(Member's Mobile App)
+flowchart TD
+    A[Treasurer Web App] -- Review Pending Receipts --> B[Web App]
+    B -- PUT /api/receipts/{receipt_id}/approve --> C[Backend API]
+    C -- Update Receipt Status --> D[PostgreSQL DB]
+    D -- Notification to Member --> E[Member's Mobile App]
 
-    F[Treasurer (Web App)] -- Upload Payment CSV --> G(Web App)
+    F[Treasurer Web App] -- Upload Payment CSV --> G[Web App]
     G -- POST /api/payments/upload-csv --> C
     C -- Auto-Match Transactions --> D
     C -- Returns Match Results --> G
-    G -- Manual Matching (if needed) --> H(Web App)
+    G -- Manual Matching (if needed) --> H[Web App]
     H -- POST /api/payments/match-manual --> C
     C -- Update Receipt Status --> D
     D -- Notification to Member --> E
@@ -400,13 +400,13 @@ This workflow describes how users can submit feedback directly through the appli
 
 ```mermaid
 graph TD
-    A[User (Mobile/Web App)] -- Access Feedback Form --> B(Mobile/Web App)
-    B -- Select Category & Enter Text --> B
-    B -- Submit Feedback --> C(Backend API)
-    C -- Capture User/Device Info --> C
-    C -- Persist Feedback --> D(PostgreSQL DB)
-    D -- New Feedback Alert --> E(Support Email Inbox)
-    C -- Confirmation to User --> B
+    A[User - Mobile/Web App] -->|Access Feedback Form| B[Mobile/Web App]
+    B -->|Select Category & Enter Text| B
+    B -->|Submit Feedback| C[Backend API]
+    C -->|Capture User/Device Info| C
+    C -->|Persist Feedback| D[PostgreSQL DB]
+    D -->|New Feedback Alert| E[Support Email Inbox]
+    C -->|Confirmation to User| B
 ```
 
 ### 2.3. Data Model (PostgreSQL)
