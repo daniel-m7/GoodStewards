@@ -82,6 +82,7 @@ graph TD
 5.  **Create a Pull Request (PR):** Open a PR from your feature/bugfix branch to `develop`. Ensure your PR description is clear and concise.
 6.  **Code Review:** Address any feedback from reviewers.
 7.  **Merge:** Once approved, merge your PR into `develop`.
+8. **Delete Branch:** `git checkout main; git pull origin main`
 
 ## 3. Containerization (Docker)
 
