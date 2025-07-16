@@ -14,7 +14,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 COPY . .
 
 # Generate the BAML client
-RUN python -m baml build
+RUN baml-cli generate
 
 # Expose Port
 EXPOSE 8000

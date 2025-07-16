@@ -1,9 +1,4 @@
-# Technical Specifications
-
-[Project GitHub Repository](https://github.com/daniel-m7/GoodStewards)
-
-
-
+# Technical Architecture Specification
 
 ## 1. Architecture Specification
 

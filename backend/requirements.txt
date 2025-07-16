@@ -2,5 +2,4 @@ fastapi
 psycopg[binary]
 uvicorn
 python-dotenv
-baml
-
+baml-py
