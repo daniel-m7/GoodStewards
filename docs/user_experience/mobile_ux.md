@@ -68,6 +68,63 @@ This is the primary workflow for an authenticated, registered user. The design p
 8.  **Receive Feedback:** The app provides immediate visual feedback that the submissions are processing. The user can safely navigate away or close the app; the process will continue.
 9.  **View Submission:** The new submissions appear at the top of their Dashboard list with a "Pending" status, confirming the action was successful and closing the loop.
 
+```mermaid
+graph TD
+    subgraph Onboarding & Registration
+        A["Scan QR Code"] --> B["App Store Download"]
+        B --> C["Install & Open App"]
+        C --> D{"Choose Authentication Method"}
+        D -- "Primary: Google/Apple" --> E1["Create Account (OAuth Flow)"]
+        D -- "Secondary: Email/Password" --> E2["Create Account (Password Flow)"]
+        E1 --> F["First Login & Approval"]
+        E2 --> F
+    end
+```
+
+```mermaid
+graph TD
+    subgraph Core Usage Loop - Submitting Receipts
+        G["Open App"] --> H["Initiate Submission"]
+        H --> I{"(Treasurer Role Only) Choose Submitter"}
+        I -- "For Myself" --> J["Capture or Select"]
+        I -- "On Behalf of a Member" --> K["Member Selection (Screen F)"]
+        K --> J
+        J --> L["Review Selections"]
+        L --> M["Choose Submission Type"]
+        M --> N["Confirm Submission"]
+        N --> O["Receive Feedback"]
+        O --> P["View Submission"]
+    end
+```
+
+## 4. Screen-by-Screen Breakdown & Mockups
+
+```mermaid
+graph TD
+    subgraph Onboarding & Registration
+        A["Scan QR Code"] --> B["App Store Download"]
+        B --> C["Install & Open App"]
+        C --> D{"Choose Authentication Method"}
+        D -- "Primary: Google/Apple" --> E1["Create Account (OAuth Flow)"]
+        D -- "Secondary: Email/Password" --> E2["Create Account (Password Flow)"]
+        E1 --> F["First Login & Approval"]
+        E2 --> F
+    end
+
+    subgraph Core Usage Loop - Submitting Receipts
+        G["Open App"] --> H["Initiate Submission"]
+        H --> I{"(Treasurer Role Only) Choose Submitter"}
+        I -- "For Myself" --> J["Capture or Select"]
+        I -- "On Behalf of a Member" --> K["Member Selection (Screen F)"]
+        K --> J
+        J --> L["Review Selections"]
+        L --> M["Choose Submission Type"]
+        M --> N["Confirm Submission"]
+        N --> O["Receive Feedback"]
+        O --> P["View Submission"]
+    end
+```
+
 ## 4. Screen-by-Screen Breakdown & Mockups
 
 ### Screen A: Login / Registration Screen

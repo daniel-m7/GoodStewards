@@ -71,20 +71,70 @@ graph TD
 
 ## 2. Technical Design Specification
 
+### 2.1. Git Collaboration Workflow
+
+This project is hosted on GitHub and follows a standard Gitflow-like branching strategy to ensure a smooth and collaborative development process.
+
+*   **GitHub Project URL:** [https://github.com/daniel-m7/GoodStewards](https://github.com/daniel-m7/GoodStewards)
+
+#### 2.1.1. Branching Strategy
+
+*   **`main` branch:** This branch always reflects the latest production-ready code. Only merged via pull requests from `release` branches.
+*   **`develop` branch:** This is the main development branch. All new features and bug fixes are integrated here. Developers create feature branches from `develop`.
+*   **`feature/<feature-name>` branches:** Created from `develop` for new features. Once a feature is complete and reviewed, it's merged back into `develop`.
+*   **`bugfix/<bug-description>` branches:** Created from `develop` for bug fixes. Merged back into `develop` upon completion.
+*   **`release/<version>` branches:** Created from `develop` when preparing a new release. Only critical bug fixes are allowed here. Once stable, it's merged into `main` and `develop`.
+*   **`hotfix/<hotfix-description>` branches:** Created directly from `main` to quickly address critical production issues. Merged back into `main` and `develop`.
+
+#### 2.1.2. Workflow
+
+```mermaid
+graph TD
+    A["Start"] --> B["Clone Repository"]
+    B --> C["Create New Branch"]
+    C --> D["Develop & Commit"]
+    D --> E["Push Branch"]
+    E --> F["Create Pull Request (PR)"]
+    F --> G["Code Review"]
+    G -- Approved --> H["Merge PR"]
+    G -- Changes Requested --> D
+    H --> I["End"]
+
+    style A fill:#e1f5fe,color:#000000
+    style B fill:#fff3e0,color:#000000
+    style C fill:#fff3e0,color:#000000
+    style D fill:#e8f5e8,color:#000000
+    style E fill:#fff3e0,color:#000000
+    style F fill:#fff3e0,color:#000000
+    style G fill:#fce4ec,color:#000000
+    style H fill:#e0f2f1,color:#000000
+    style I fill:#e1f5fe,color:#000000
+```
+
+1.  **Clone the repository:** `git clone https://github.com/daniel-m7/GoodStewards.git`
+2.  **Create a new branch:** For features or bug fixes, always create a new branch from `develop`: `git checkout develop && git pull && git checkout -b feature/my-new-feature`
+3.  **Develop and commit:** Make your changes, commit frequently with descriptive messages.
+4.  **Push your branch:** `git push origin feature/my-new-feature`
+5.  **Create a Pull Request (PR):** Open a PR from your feature/bugfix branch to `develop`. Ensure your PR description is clear and concise.
+6.  **Code Review:** Address any feedback from reviewers.
+7.  **Merge:** Once approved, merge your PR into `develop`.
+
+---
+
 This section provides detailed specifications for the API, data model, and user workflows.
 
-### 2.1. API Specification
+### 2.2. API Specification
 
 The backend API, built with FastAPI, provides RESTful endpoints for interaction with both the mobile and web applications. All API requests require authentication via OAuth 2.0 (handled by Auth.js) and are subject to Role-Based Access Control (RBAC).
 
-#### 2.1.1. Authentication
+#### 2.2.1. Authentication
 
 *   **POST /api/auth/login**
     *   **Description:** Initiates the OAuth 2.0 login flow.
     *   **Request Body:** (Handled by Auth.js, typically redirects to OAuth provider)
     *   **Response:** Redirects to the authenticated application.
 
-#### 2.1.2. User & Organization Management
+#### 2.2.2. User & Organization Management
 
 *   **GET /api/users/me**
     *   **Description:** Retrieves the authenticated user's profile information.
@@ -118,7 +168,7 @@ The backend API, built with FastAPI, provides RESTful endpoints for interaction 
         ```
 *   **Note on Special Users:** To handle submissions for unknown members or anonymous donors (Use Case 2.5), each organization will have pre-defined user records for "Unknown User" and "Anonymous Donor". The treasurer can select these special users during the submission process when the actual member is not known or should be kept anonymous.
 
-#### 2.1.3. Receipt Management
+#### 2.2.3. Receipt Management
 
 *   **POST /api/receipts/upload**
     *   **Description:** Uploads a new receipt image for processing. Allows a treasurer to submit on behalf of a member.
@@ -230,7 +280,7 @@ The backend API, built with FastAPI, provides RESTful endpoints for interaction 
         }
         ```
 
-#### 2.1.4. Form Generation
+#### 2.2.4. Form Generation
 
 *   **POST /api/forms/generate-refund-package**
     *   **Description:** Generates a complete tax refund package, including Form E-585 and, if necessary, Form E-536R for a given period.
@@ -250,7 +300,7 @@ The backend API, built with FastAPI, provides RESTful endpoints for interaction 
         }
         ```
 
-#### 2.1.5. Payment Reconciliation
+#### 2.2.5. Payment Reconciliation
 
 *   **POST /api/payments/upload-csv**
     *   **Description:** Uploads a CSV of payment transactions for reconciliation.
@@ -284,11 +334,11 @@ The backend API, built with FastAPI, provides RESTful endpoints for interaction 
         }
         ```
 
-### 2.2. Use Case Workflows
+### 2.3. Use Case Workflows
 
 This section outlines the key user-facing workflows within the GoodStewards application.
 
-#### 2.2.1. Receipt Submission and AI Extraction Workflow (Use Case 1.1, 2.1, 2.6)
+#### 2.3.1. Receipt Submission and AI Extraction Workflow (Use Case 1.1, 2.1, 2.6)
 
 This workflow describes how users submit receipts and how the system processes them using AI.
 
@@ -321,7 +371,7 @@ graph TD
     F -- No --> J["Return Error to User"]
 ```
 
-#### 2.2.2. Automated Form Generation Workflow (Use Case 1.2, 6.3)
+#### 2.3.2. Automated Form Generation Workflow (Use Case 1.2, 6.3)
 
 This workflow describes how treasurers generate official tax refund forms (E-585 and E-536R).
 
@@ -350,7 +400,7 @@ graph TD
     B -- Display/Download PDFs --> A
 ```
 
-#### 2.2.3. Automated Reimbursement Workflow (Use Case 2.3)
+#### 2.3.3. Automated Reimbursement Workflow (Use Case 2.3)
 
 This workflow details how treasurers approve member expenses and reconcile payments.
 
@@ -384,7 +434,7 @@ flowchart TD
     D -- Notification to Member --> E
 ```
 
-#### 2.2.4. In-App Feedback Submission Workflow (Use Case 3.1)
+#### 2.3.4. In-App Feedback Submission Workflow (Use Case 3.1)
 
 This workflow describes how users can submit feedback directly through the application.
 
@@ -409,7 +459,7 @@ graph TD
     C -->|Confirmation to User| B
 ```
 
-### 2.3. Data Model (PostgreSQL)
+### 2.4. Data Model (PostgreSQL)
 
 This is a simplified, high-level schema.
 
@@ -466,7 +516,7 @@ This is a simplified, high-level schema.
     *   `tax_type` (ENUM: 'state', 'county', 'transit', 'food')
     *   `amount` (DECIMAL)
 
-### 2.4. Entity-Relationship Diagram (ERD)
+### 2.5. Entity-Relationship Diagram (ERD)
 
 ```mermaid
 erDiagram
@@ -539,7 +589,7 @@ erDiagram
 
 ```
 
-### 2.5. Security Considerations
+### 2.6. Security Considerations
 
 *   **Data Encryption:** All data, both in transit (TLS/SSL) and at rest (database encryption), will be encrypted.
 *   **Access Control:** Strict RBAC will be enforced at the API level to ensure users can only access data they are authorized to view.
@@ -547,18 +597,18 @@ erDiagram
 *   **Dependency Scanning:** Automated tools will be used to scan for vulnerabilities in third-party libraries.
 *   **Secrets Management:** API keys, database credentials, and other secrets will be stored securely using environment variables or a dedicated secrets management service (e.g., Doppler, or the hosting provider's built-in solution).
 
-### 2.6. Scalability and Performance
+### 2.7. Scalability and Performance
 
 *   **Stateless Backend:** The FastAPI backend will be stateless, allowing for horizontal scaling by simply adding more instances.
 *   **Asynchronous Processing:** Long-running tasks like AI data extraction and PDF generation can be offloaded to background workers (e.g., using Celery) to avoid blocking the main API.
 *   **Database Scaling:** Managed PostgreSQL services (like on Render) allow for easy vertical scaling (increasing CPU/RAM) and provide read replicas to handle high read loads.
 *   **CDN for Frontend:** Using Vercel/Netlify for the frontend ensures that static assets are served quickly from a global Content Delivery Network (CDN).
 
-### 2.7. Containerization (Docker)
+### 2.8. Containerization (Docker)
 
 To ensure a consistent and reproducible environment, the backend application will be containerized using Docker. This section outlines the steps to build and run the Docker container.
 
-#### 2.7.1. Dockerfile
+#### 2.8.1. Dockerfile
 
 A `Dockerfile` will be created in the root of the project with the following steps:
 
@@ -569,7 +619,7 @@ A `Dockerfile` will be created in the root of the project with the following ste
 5.  **Expose Port:** Expose the port the FastAPI application will run on (e.g., 8000).
 6.  **Run Command:** Use `CMD` to specify the command to run the application (e.g., `uvicorn main:app --host 0.0.0.0 --port 8000`).
 
-#### 2.7.2. Docker Compose
+#### 2.8.2. Docker Compose
 
 For local development, a `docker-compose.yml` file will be created to orchestrate the backend service and the PostgreSQL database.
 
@@ -579,7 +629,7 @@ For local development, a `docker-compose.yml` file will be created to orchestrat
 *   **Networking:** Both services will be on the same Docker network to allow the backend to communicate with the database.
 *   **Environment Variables:** The `docker-compose.yml` file will also manage environment variables for the backend service, such as database credentials and API keys.
 
-#### 2.7.3. Build and Run Steps
+#### 2.8.3. Build and Run Steps
 
 1.  **Build the Docker Image:**
     ```bash
