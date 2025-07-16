@@ -23,22 +23,43 @@ We are building a unified web and mobile application designed to streamline the 
 
 This solution saves valuable time, eliminates administrative friction, and ensures non-profits maximize their financial resources.
 
+## Build and Run
+
+To get the project up and running, follow these steps:
+
+1.  **Ensure Docker is installed:** Make sure you have Docker Desktop or Docker Engine installed and running on your system.
+2.  **Navigate to the project root:** Open your terminal or command prompt and change your current directory to the root of this project (where `docker-compose.yml` is located).
+3.  **Build and run the services:** Execute the following command:
+
+    ```bash
+    docker compose up --build
+    ```
+
+    This command will:
+    *   Build the `backend` service using the `Dockerfile` in the `backend/` directory.
+    *   Start the PostgreSQL database service.
+    *   Start the backend API service.
+
+4.  **Access the application:**
+    *   The backend API will be accessible at `http://localhost:8000`.
+
 ---
 
 ### Further Documentation
 
 For more detailed information, please see the documents in the `docs/` folder:
 
-*   [**E-585 Report Generation Design**](./docs/e585_report_generation_design.md)
-*   [**Epics and Use Cases**](./docs/epics_and_use_cases.md)
-*   [**Mobile UX**](./docs/mobile-ux.md)
-*   [**Project Feasibility Assessment**](./docs/project_feasibility_assesment.md)
-*   [**Roadmap**](./docs/roadmap.md)
-*   [**Success Metrics**](./docs/success_metrics.md)
-*   [**Target Audience**](./docs/target_audience.md)
-*   [**Technical Architecture**](./docs/technical_architecture.md)
-*   [**Website**](./docs/website.md)
+*   [**Technical Specifications**](./docs/technical_specifications.md)
+*   **Business Documentation**
+    *   [**Epics, Use Cases & Roadmap**](./docs/business/epics_usecases_roadmap.md)
+    *   [**Project Feasibility Assessment**](./docs/business/project_feasibility_assesment.md)
+    *   [**ROI Success Metrics**](./docs/business/roi_success_metrics.md)
+    *   [**Target Audience**](./docs/business/target_audience.md)
+*   **User Experience Documentation**
+    *   [**Dashboard UX**](./docs/user_experience/dashboard_ux.md)
+    *   [**Mobile UX**](./docs/user_experience/mobile_ux.md)
+    *   [**Website UX**](./docs/user_experience/website_ux.md)
 *   [**Forms**](./docs/forms)
-    *   [**E-536R_5-20-24_webfill_v1_Final.pdf**](./docs/forms/E-536R_5-20-24_webfill_v1_Final.pdf)
-    *   [**e585_example_6-11-24_v.03.pdf**](./docs/forms/e585_example_6-11-24_v.03.pdf)
-    *   [**e585-Webfill-Final-01052021.pdf**](./docs/forms/e585-Webfill-Final-01052021.pdf)
+    *   [**E-536R_5-20-24_webfill_v1_Final.pdf**](./forms/E-536R_5-20-24_webfill_v1_Final.pdf)
+    *   [**e585_example_6-11-24_v.03.pdf**](./forms/e585_example_6-11-24_v.03.pdf)
+    *   [**e585-Webfill-Final-01052021.pdf**](./forms/e585-Webfill-Final-01052021.pdf)
