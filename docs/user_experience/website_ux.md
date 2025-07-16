@@ -55,6 +55,35 @@ The website journey should be simple and guide the user towards conversion with 
     2.  Navigates to the **Feedback** page via the header or footer.
     3.  Submits feedback.
 
+```mermaid
+graph TD
+    subgraph Website User Experience Flow
+        subgraph Path 1: The Convinced Visitor
+            A1["Lands on Homepage"] --> B1["Watches explainer video"]
+            B1 --> C1["Clicks 'Sign Up'"]
+            C1 --> D1["Navigates to app to begin registration"]
+        end
+
+        subgraph Path 2: The Investigative Visitor
+            A2["Lands on Homepage"] --> B2["Scrolls through 'How it Works' infographic"]
+            B2 --> C2["Navigates to Features page"]
+            C2 --> D2["Visits Testimonials page"]
+            D2 --> E2["Checks Pricing page"]
+            E2 --> F2["Clicks 'Sign Up'"]
+        end
+
+        subgraph Path 3: The Support Seeker
+            A3["Lands on any page"] --> B3["Navigates to Contact page"]
+            B3 --> C3["Fills out contact form"]
+        end
+
+        subgraph Path 4: The Feedback Giver
+            A4["Lands on any page"] --> B4["Navigates to Feedback page"]
+            B4 --> C4["Submits feedback"]
+        end
+    end
+```
+
 ## 5. Page Mockups & Content Strategy
 
 ### Homepage (`/`)
