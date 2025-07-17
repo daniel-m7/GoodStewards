@@ -12,28 +12,55 @@ To set up your local development environment, follow these steps:
     cd GoodStewards
     ```
 
-2.  **Install Docker and Docker Compose:**
-    Ensure you have Docker Desktop (or Docker Engine and Docker Compose) installed on your system. Refer to the official Docker documentation for installation instructions specific to your operating system.
+2.  **Install Prerequisites:**
+    *   **Docker and Docker Compose:** Ensure you have Docker Desktop (or Docker Engine and Docker Compose) installed.
+    *   **Poetry:** Install Poetry for Python dependency management. See the [official documentation](https://python-poetry.org/docs/#installation).
+    *   **pnpm:** Install pnpm for frontend dependency management (`npm install -g pnpm`).
 
-3.  **Set up Backend (FastAPI & PostgreSQL) with Docker Compose:**
-    Navigate to the root of the project and run:
+3.  **Configure Environment Variables:**
+    Create a `.env` file in the project root by copying the example file. On Windows, use `copy`; on macOS/Linux, use `cp`.
+    ```bash
+    # Windows
+    copy .env.example .env
+
+    # macOS / Linux
+    cp .env.example .env
+    ```
+    Review the `.env` file. The defaults are configured to work with the local Docker Compose setup.
+
+4.  **Install Backend Dependencies (for IDE support):**
+    Navigate to the `backend/` directory and install dependencies using Poetry. This step is for your local IDE's IntelliSense and type-checking; the application itself will run inside Docker.
+    ```bash
+    cd backend
+    poetry install
+    cd ..
+    ```
+
+5.  **Run Backend & Database with Docker Compose:**
+    From the root of the project, run:
     ```bash
     docker-compose up --build -d
     ```
-    This will build the backend Docker image, start the FastAPI application, and a PostgreSQL database. The backend will be accessible at `http://localhost:8000`.
+    This command will:
+    *   Build the backend Docker image from `backend/Dockerfile`.
+    *   Start the FastAPI application container.
+    *   Start the PostgreSQL database container.
+    *   The backend API will be accessible at `http://localhost:8000`.
+    *   The database will be accessible on `localhost:5432`.
 
-4.  **Install Frontend Dependencies (SvelteKit):**
-    Navigate to the `frontend/` directory (assuming it will be created later) and install dependencies:
+6.  **Install Frontend Dependencies:**
+    Navigate to the `frontend/` directory (once created) and install dependencies using pnpm:
     ```bash
     cd frontend
-    npm install
+    pnpm install
     ```
 
-5.  **Run Frontend Development Server:**
+7.  **Run Frontend Development Server:**
     ```bash
-    npm run dev
+    pnpm run dev
     ```
-    The frontend application will typically be available at `http://localhost:5173` (or another port as indicated by SvelteKit).
+    The frontend application will typically be available at `http://localhost:5173`.
+
 
 ## 2. Git Collaboration Workflow
 
