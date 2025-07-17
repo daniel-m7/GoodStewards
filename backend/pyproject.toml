@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "goodstewards-backend"
+version = "0.1.0"
+description = "Backend for GoodStewards application"
+authors = ["Gemini CLI Agent <gemini-cli@google.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.111.0"
+uvicorn = {extras = ["standard"], version = "^0.29.0"}
+sqlmodel = "^0.0.18"
+psycopg = {extras = ["binary", "pool"], version = "^3.1.18"}
+alembic = "^1.13.1"
+baml-py = "^0.4.1"
+python-dotenv = "^1.0.1"
+pydantic-settings = "^2.2.1"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+boto3 = "^1.34.108"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
