@@ -1,7 +1,6 @@
 from collections.abc import AsyncGenerator
 from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from app.core.config import settings
 
@@ -12,7 +11,7 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
     """
     Dependency to get an async database session.
     """
-    async_session = sessionmaker(
+    async_session = async_sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
