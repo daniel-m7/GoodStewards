@@ -1,9 +1,7 @@
 // The BAML linter would be here if we had one.
 // Defines the AI function for extracting structured data from a receipt image.
 
-client GPT4Turbo {
-  provider openai
-}
+
 
 // Define the structured data model we want to extract.
 class ReceiptData {
@@ -38,24 +36,55 @@ function ExtractReceiptData(
   // Input is the receipt image.
   receipt: image
 ) -> ReceiptData {
-  client GPT4Turbo
-  prompt #"
-    Analyze the following receipt image and extract the data into a structured JSON format according to the defined schema.
+  client CustomGPT4o
+    prompt #"
+        {{_.role("user")}}
+        
+        You are an expert in extracting structured data from images of receipts.
+        But you are also an expert preparer of E585 for a non-profit organization in the USA.
+        Your task is to extract the following details from the receipt image:
+        - Total amount
+        - Date of the transaction
+        - Business name
+        - Address of the business
+        - County of the business 
+        - Total tax amount 
+        - State Sales Tax 
+        - Food County Transit Sales Tax
+        - Expense Category 
+        - Tax Rate
 
-    - vendor_name: The name of the store or vendor.
-    - purchase_date: The date of the purchase.
-    - county: The county where the purchase was made. If not explicitly mentioned, infer from the city or store location if possible.
-    - subtotal_amount: The subtotal before taxes.
-    - tax_amount: The total amount of all taxes.
-    - total_amount: The final total amount.
-    - expense_category: The category of the expense.
-    - is_donation: Set to true if the receipt is for a donation, otherwise false.
-    - tax_breakdowns: A list of all individual taxes (state, county, transit, food) and their amounts.
-    - tax_rate: The rate of the tax.
+        Extract details from this image of a receipt: {{ receipt }}
 
-    Image:
-    {{ receipt }}
-  "#
+        The county name may need to be inferred from the address info extracted. 
+        Example: 1005 Jeweled Crown Ct, Indian Trail, NC 28079, USA, so return Union County, NC, USA.
+
+        Return the extracted data in the following JSON format:
+        ```json
+        {
+            "total_amount": 123.45,
+            "date": "2023-10-01",
+            "business": "Example Business",
+            "address": "123 Example St, City, State, ZIP",
+            "county": "Example County",
+            "total_sales_tax": 5.00,
+            "state_tax": 2.50,
+            "food_county_transit_tax": 1.50,
+            "expense_category": "Food",
+            "tax_rate": 0.05
+        }
+        ```
+
+        Ensure that the output is in the specified JSON format and includes all relevant fields.
+        {{ ctx.output_format }}
+    "#
 }
 
-
+test Test_Receipt {
+functions [ExtractReceiptData]
+  args {
+    receipt {
+      url "https://github.com/daniel-m7/GoodStewards/raw/main/data/1-receipt.png"
+    }
+  }
+}
