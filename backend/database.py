@@ -36,73 +36,26 @@ def get_db_connection():
     return psycopg.connect(conn_string)
 
 def create_tables():
-    conn = get_db_connection()
-    with conn.cursor() as cur:
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS organizations (
-                id UUID PRIMARY KEY,
-                name VARCHAR,
-                fein VARCHAR,
-                ntee_code VARCHAR,
-                address VARCHAR,
-                city VARCHAR,
-                state VARCHAR,
-                zip_code VARCHAR,
-                created_at TIMESTAMPTZ
-            );
-        """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id UUID PRIMARY KEY,
-                organization_id UUID REFERENCES organizations(id),
-                full_name VARCHAR,
-                email VARCHAR UNIQUE,
-                role VARCHAR,
-                created_at TIMESTAMPTZ
-            );
-        """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS receipts (
-                id UUID PRIMARY KEY,
-                user_id UUID REFERENCES users(id),
-                organization_id UUID REFERENCES organizations(id),
-                image_url VARCHAR,
-                vendor_name VARCHAR,
-                purchase_date VARCHAR,
-                county VARCHAR,
-                subtotal_amount DECIMAL,
-                tax_amount DECIMAL,
-                total_amount DECIMAL,
-                expense_category VARCHAR,
-                status VARCHAR,
-                is_donation BOOLEAN,
-                payment_method VARCHAR,
-                payment_reference VARCHAR,
-                payment_proof_url VARCHAR,
-                submitted_at TIMESTAMPTZ,
-                approved_at TIMESTAMPTZ
-            );
-        """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS payment_transactions (
-                id UUID PRIMARY KEY,
-                organization_id UUID REFERENCES organizations(id),
-                transaction_date DATE,
-                amount DECIMAL,
-                reference_id VARCHAR,
-                receipt_id UUID REFERENCES receipts(id)
-            );
-        """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS receipt_tax_breakdowns (
-                id UUID PRIMARY KEY,
-                receipt_id UUID REFERENCES receipts(id),
-                tax_type VARCHAR,
-                amount DECIMAL
-            );
-        """)
-    conn.commit()
-    conn.close()
+    """
+    DEPRECATED: This function is no longer needed.
+    
+    SQLModel automatically creates tables based on the model definitions in app/models/models.py.
+    The tables are created with singular names following SQLModel conventions:
+    - organization (from Organization class)
+    - user (from User class) 
+    - receipt (from Receipt class)
+    - receipttaxbreakdown (from ReceiptTaxBreakdown class)
+    - payment_transactions (from PaymentTransaction class)
+    - feedback (from Feedback class)
+    
+    To create tables, use SQLModel's create_all() function instead:
+    from sqlmodel import create_all
+    from app.models.models import *
+    create_all(engine)
+    """
+    print("⚠️  DEPRECATED: Use SQLModel's create_all() instead of manual table creation")
+    print("💡 Tables are automatically created by SQLModel with singular names")
+    print("📋 Correct table names: organization, user, receipt, receipttaxbreakdown, payment_transactions, feedback")
 
 if __name__ == "__main__":
     create_tables() 

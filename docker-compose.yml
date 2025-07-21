@@ -25,8 +25,12 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
-    env_file:
-      - .env
+    environment:
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql+psycopg_async://postgres:postgres@db:5432/goodstewards
+      - SECRET_KEY=your-super-secret-key-change-this-in-production
+      - BAML_CLIENT_MODE=http
+      - BAML_CLIENT_URL=http://localhost:2022
     depends_on:
       db:
         condition: service_healthy
