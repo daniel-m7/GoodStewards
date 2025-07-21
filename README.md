@@ -49,7 +49,11 @@ To get the project up and running, follow these steps:
 
 For more detailed information, please see the documents in the `docs/` folder:
 
-*   [**Technical Specifications**](./docs/technical_specifications.md)
+*   **Technical Documentation**
+    *   [**Technical Design Specification**](./docs/technical/tech_design_spec.md)
+    *   [**Database Schema**](./backend/DATABASE_SCHEMA.md)
+    *   [**Development Specification**](./docs/technical/dev_spec.md)
+    *   [**Architecture Specification**](./docs/technical/architecture_spec.md)
 *   **Business Documentation**
     *   [**Epics, Use Cases & Roadmap**](./docs/business/epics_usecases_roadmap.md)
     *   [**Project Feasibility Assessment**](./docs/business/project_feasibility_assesment.md)

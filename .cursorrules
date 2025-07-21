@@ -1,0 +1,351 @@
+# GoodStewards Project - Cursor Rules
+
+## Project Overview
+GoodStewards is a non-profit tax refund management application that helps organizations track receipts and generate tax refund forms (E-585 and E-536R) for North Carolina sales tax refunds.
+
+## Architecture & Technology Stack
+
+### Backend (FastAPI + Python)
+- **Framework**: FastAPI with async/await patterns
+- **Database**: PostgreSQL with psycopg3 driver
+- **ORM**: SQLModel (SQLAlchemy + Pydantic)
+- **Authentication**: OAuth 2.0 with JWT tokens
+- **AI Integration**: BAML (Boundary ML) with Google Gemini 1.5 Pro
+- **File Storage**: Cloudflare R2 (S3-compatible)
+- **Containerization**: Docker with docker-compose
+
+### Frontend (Future Implementation)
+- **Web Dashboard**: SvelteKit for treasurers
+- **Mobile App**: Svelte/Capacitor for members
+- **Package Manager**: pnpm
+- **Authentication**: Auth.js (OAuth 2.0)
+
+### Development Environment
+- **Package Manager**: Poetry for Python dependencies
+- **Version Control**: Git with Gitflow branching strategy
+- **Local Development**: Docker Compose for backend + database
+- **Hosting**: Render (backend), Vercel/Netlify (frontend)
+
+## Monorepo Project Structure
+
+```
+/
+├── .github/workflows/          # CI/CD pipelines (e.g., ci.yml)
+├── backend/                    # Python FastAPI Application
+│   ├── app/
+│   │   ├── api/               # API routers (e.g., api/v1/receipts.py)
+│   │   ├── core/              # App configuration, security
+│   │   ├── models/            # SQLModel table models (e.g., user_model.py)
+│   │   ├── schemas/           # Pydantic schemas for API I/O (e.g., receipt_schema.py)
+│   │   ├── services/          # Business logic (e.g., receipt_service.py)
+│   │   └── __init__.py
+│   ├── alembic/               # Database migrations
+│   ├── tests/                 # Pytest tests
+│   ├── .env                   # Local environment variables (in .gitignore)
+│   ├── pyproject.toml         # Project metadata and dependencies (Poetry)
+│   └── README.md              # Backend-specific instructions
+├── frontend/                   # SvelteKit Application
+│   ├── src/
+│   │   ├── lib/
+│   │   │   ├── client/        # Client-side only code
+│   │   │   ├── server/        # Server-side only code (DB clients, etc.)
+│   │   │   └── components/    # Reusable Svelte components
+│   │   ├── routes/            # SvelteKit file-based routing
+│   │   └── app.html
+│   ├── static/                # Static assets (favicon, images)
+│   ├── tests/                 # Vitest tests
+│   ├── .env                   # Local environment variables
+│   └── package.json
+├── website/                    # Static marketing website
+│   ├── css/
+│   ├── js/
+│   ├── assets/
+│   └── index.html
+└── .env.example               # Template for environment variables
+```
+
+## Core Code Generation Directives
+
+### Mandatory Requirements
+- **Error Handling is Mandatory**: Use `try...catch` (JS/Svelte) or `try...except` (Python) for any operation that can fail (API calls, DB ops, I/O)
+- **Logging Over Printing**: Use Python's `logging` module for structured backend logging. Never use `print()`
+- **Readability**: Write code that is easy to read and understand. Use clear, descriptive names. Add comments only to explain the "why" of complex logic
+- **Completeness**: Generated code must be complete, runnable, and include all necessary imports
+- **Testing**: Code without tests is incomplete. All features must include corresponding tests
+
+### Environment & Configuration
+- **NEVER** hardcode secrets (API Keys, DB URLs, JWT secrets)
+- All configuration must be loaded from environment variables using `pydantic-settings` for the backend
+- A `.env.example` file must always be maintained at the root
+
+### Dependency Management
+- **Backend**: Use **Poetry** (`pyproject.toml`)
+- **Frontend**: Use **pnpm** (`package.json`, `pnpm-lock.yaml`)
+
+## Code Standards & Conventions
+
+### Python Backend Standards
+1. **Type Hints**: Always use type hints for function parameters and return values
+2. **Async/Await**: Use async/await patterns for database operations and external API calls
+3. **Error Handling**: Use FastAPI HTTPException with appropriate status codes
+4. **Documentation**: Include docstrings for all functions and classes
+5. **Naming**: Use snake_case for variables and functions, PascalCase for classes
+6. **Imports**: Group imports (standard library, third-party, local) with blank lines
+7. **Code Style**: Strictly adhere to **PEP 8**, use **type hints** everywhere, and use f-strings
+8. **Structure**: Use `APIRouter` to modularize endpoints
+9. **Database**: Use **asynchronous** database sessions (`AsyncSession`) and manage sessions using FastAPI's dependency injection (`Depends`)
+10. **Security**: Use `passlib` for password hashing and implement **OAuth2** with reusable dependencies
+
+### API Design Standards
+1. **RESTful Endpoints**: Follow REST conventions with proper HTTP methods
+2. **Authentication**: All endpoints require OAuth 2.0 authentication except health checks
+3. **Authorization**: Implement Role-Based Access Control (RBAC) - 'treasurer' and 'member' roles
+4. **Response Format**: Consistent JSON responses with proper status codes
+5. **Error Responses**: Standardized error format with descriptive messages
+6. **Pagination**: Use limit/offset pagination for list endpoints
+
+### Database Standards
+1. **UUID Primary Keys**: Use UUID for all primary keys
+2. **Timestamps**: Include created_at/updated_at timestamps where appropriate
+3. **Foreign Keys**: Proper foreign key relationships with cascade rules
+4. **Indexing**: Index on frequently queried fields (email, organization_id, etc.)
+5. **Migrations**: Use Alembic for database migrations
+6. **Models**: Define table models by inheriting from `SQLModel, table=True`
+7. **Sessions**: Use **asynchronous** database sessions (`AsyncSession`) and manage sessions using FastAPI's dependency injection (`Depends`)
+
+### Security Standards
+1. **Input Validation**: Validate all inputs using Pydantic models
+2. **SQL Injection**: Use parameterized queries (SQLModel handles this)
+3. **File Uploads**: Validate file types and sizes for image uploads
+4. **Environment Variables**: Use pydantic-settings for configuration
+5. **Secrets Management**: Store sensitive data in environment variables
+6. **Password Hashing**: Use `passlib` for password hashing
+7. **OAuth2**: Implement **OAuth2** with reusable dependencies (`get_current_active_user`) to validate JWT tokens and protect endpoints
+8. **RBAC**: Implement **Role-Based Access Control (RBAC)** within the security dependency
+
+## Project Structure
+
+### Backend Structure
+```
+backend/
+├── app/
+│   ├── api/
+│   │   └── v1/
+│   │       ├── endpoints/     # API route handlers
+│   │       └── api.py         # Main API router
+│   ├── core/                  # Core configuration and utilities
+│   │   ├── auth.py           # Authentication logic
+│   │   ├── config.py         # Settings and configuration
+│   │   ├── db.py             # Database session management
+│   │   └── init_db.py        # Database initialization
+│   ├── models/               # SQLModel data models
+│   ├── schemas/              # Pydantic schemas for API I/O
+│   ├── services/             # Business logic services
+│   │   ├── baml_service.py   # AI integration
+│   │   └── storage_service.py # File storage
+│   └── main.py               # FastAPI application entry point
+├── alembic/                  # Database migrations
+├── tests/                    # Pytest tests
+├── baml_src/                 # BAML AI function definitions
+├── config/                   # Static configuration files
+├── Dockerfile
+├── pyproject.toml           # Poetry dependencies
+└── requirements.txt         # pip dependencies (for Docker)
+```
+
+### Frontend Structure (Future)
+```
+frontend/
+├── src/
+│   ├── lib/
+│   │   ├── client/           # Client-side only code
+│   │   ├── server/           # Server-side only code (DB clients, etc.)
+│   │   └── components/       # Reusable Svelte components
+│   ├── routes/               # SvelteKit file-based routing
+│   └── app.html
+├── static/                   # Static assets (favicon, images)
+├── tests/                    # Vitest tests
+├── .env                      # Local environment variables
+└── package.json
+```
+
+### Key Models
+- **Organization**: Non-profit organization details
+- **User**: Users with roles (treasurer/member)
+- **Receipt**: Receipt data with AI-extracted information
+- **ReceiptTaxBreakdown**: Tax breakdown details
+- **PaymentTransaction**: Payment reconciliation data
+
+## Development Workflow
+
+### Git Branching Strategy
+- **main**: Production-ready code
+- **develop**: Main development branch (default for new features)
+- **feature/***: Feature development branches (from `develop`)
+- **bugfix/***: Bug fix branches (from `develop`)
+- **release/***: Release preparation branches (from `develop`)
+- **hotfix/***: Critical production fixes (from `main`)
+
+### Code Review Standards
+1. **Pull Requests**: All changes go through PR review
+2. **Testing**: Include tests for new functionality
+3. **Documentation**: Update docs for API changes
+4. **Security**: Review for security implications
+
+### CI/CD Pipeline
+1. **GitHub Actions**: Generate workflows for CI/CD
+2. **Automated Testing**: Run linters (`black`, `ruff`, `eslint`) and full test suite on every PR to `main`
+3. **Code Quality**: Enforce code style and quality standards
+4. **Security Scanning**: Scan for vulnerabilities
+5. **Automated Deployment**: Deploy to staging/production
+
+## AI Integration Guidelines
+
+### BAML Usage
+1. **Function Definitions**: Define AI functions in `baml_src/` directory
+2. **Type Safety**: Use proper BAML types (string, float, bool, enum)
+3. **Error Handling**: Handle AI extraction failures gracefully
+4. **Validation**: Validate AI-extracted data before persistence
+
+### Receipt Processing Workflow
+1. **Image Upload**: Store in Cloudflare R2
+2. **AI Extraction**: Use BAML to extract structured data
+3. **Validation**: Check against non-refundable categories
+4. **Persistence**: Store validated data in PostgreSQL
+
+## Configuration Management
+
+### Environment Variables
+- **DATABASE_URL**: PostgreSQL connection string
+- **SECRET_KEY**: JWT signing key
+- **R2_ACCESS_KEY_ID**: Cloudflare R2 credentials
+- **R2_SECRET_ACCESS_KEY**: Cloudflare R2 credentials
+- **R2_ENDPOINT_URL**: Cloudflare R2 endpoint
+- **R2_BUCKET_NAME**: Cloudflare R2 bucket name
+
+### Static Configuration
+- **nonrefundable_categories.json**: Categories not eligible for tax refunds
+- **Form Templates**: E-585 and E-536R PDF templates
+
+## Performance & Scalability
+
+### Database Optimization
+1. **Connection Pooling**: Use async connection pools
+2. **Query Optimization**: Use proper indexes and efficient queries
+3. **Caching**: Consider Redis for frequently accessed data
+
+### API Performance
+1. **Async Operations**: Use async/await for I/O operations
+2. **Background Tasks**: Use Celery for long-running tasks
+3. **Rate Limiting**: Implement rate limiting for API endpoints
+
+## Testing Standards
+
+### Test Types
+1. **Unit Tests**: Test individual functions and classes
+2. **Integration Tests**: Test API endpoints and database operations
+3. **End-to-End Tests**: Test complete user workflows
+
+### Test Coverage
+- Aim for 80%+ code coverage
+- Test all API endpoints
+- Test authentication and authorization
+- Test error scenarios
+
+### Testing Frameworks
+- **Backend**: Use **Pytest**. Write unit tests for services and integration tests for API endpoints
+- **Frontend**: Use **Vitest** with **@testing-library/svelte**. Write unit tests for components and stores
+- **Code without tests is incomplete**: All features must include corresponding tests
+
+## Deployment & DevOps
+
+### Docker Standards
+1. **Multi-stage Builds**: Use multi-stage Dockerfiles for optimization
+2. **Health Checks**: Include health check endpoints
+3. **Environment Variables**: Use .env files for configuration
+4. **Containerization**: All backend services will be containerized using Docker for consistency between development, testing, and production environments
+
+### CI/CD Pipeline
+1. **GitHub Actions**: Generate workflows for CI/CD
+2. **Automated Testing**: Run linters (`black`, `ruff`, `eslint`) and full test suite on every PR to `main`
+3. **Code Quality**: Use linting and formatting tools
+4. **Security Scanning**: Scan for vulnerabilities
+5. **Automated Deployment**: Deploy to staging/production
+
+## Documentation Standards
+
+### Code Documentation
+1. **Docstrings**: Include docstrings for all public functions
+2. **Type Hints**: Use comprehensive type hints
+3. **Comments**: Add comments for complex business logic
+
+### API Documentation
+1. **OpenAPI/Swagger**: Auto-generated from FastAPI
+2. **Endpoint Descriptions**: Clear descriptions for all endpoints
+3. **Request/Response Examples**: Include examples in docstrings
+
+## Security Considerations
+
+### Data Protection
+1. **PII Handling**: Minimize collection and secure storage of PII
+2. **Data Encryption**: Encrypt sensitive data at rest and in transit
+3. **Access Logging**: Log access to sensitive endpoints
+
+### Compliance
+1. **GDPR**: Follow data protection principles
+2. **Tax Regulations**: Ensure compliance with NC tax laws
+3. **Audit Trail**: Maintain audit logs for financial transactions
+
+## Error Handling
+
+### Standard Error Responses
+```json
+{
+  "detail": "Descriptive error message",
+  "error_code": "ERROR_CODE",
+  "timestamp": "2024-01-01T00:00:00Z"
+}
+```
+
+### Common HTTP Status Codes
+- **200**: Success
+- **201**: Created
+- **400**: Bad Request
+- **401**: Unauthorized
+- **403**: Forbidden
+- **404**: Not Found
+- **422**: Validation Error
+- **500**: Internal Server Error
+
+## Frontend Standards (Future Implementation)
+
+### SvelteKit Standards
+1. **Structure & Data Loading**: Use `$lib` aliases and fetch data in `+page.server.ts` or `+layout.server.ts` `load` functions
+2. **Error Handling**: Use SvelteKit's `@sveltejs/kit/error` helper in `load` functions and `try...catch` for client-side API calls
+3. **State Management & Forms**: Use Svelte Stores for shared state and SvelteKit's `enhance` action for forms
+4. **Styling**: Use **TailwindCSS** for utility-first CSS with component-specific overrides in `<style>` blocks
+5. **Accessibility (a11y)**: All code must be accessible with semantic HTML, keyboard navigability, and proper `alt` text and `aria-label`s
+
+### Website Standards (Static Marketing Site)
+1. **HTML**: Use semantic HTML5 with proper `lang`, `charset`, `viewport`, and descriptive `<title>`
+2. **CSS**: Implement mobile-first design using CSS Custom Properties for theming
+3. **JavaScript**: Use modern ES6+ syntax wrapped in `DOMContentLoaded` event listeners without polluting global scope
+
+## Best Practices
+
+### General Guidelines
+1. **DRY Principle**: Don't repeat yourself
+2. **SOLID Principles**: Follow SOLID design principles
+3. **Clean Code**: Write readable, maintainable code
+4. **Performance**: Consider performance implications
+5. **Security**: Security-first approach
+
+### Code Quality
+1. **Linting**: Use flake8, black, isort for Python; eslint for JavaScript/TypeScript
+2. **Type Checking**: Use mypy for static type checking in Python
+3. **Code Review**: Thorough code reviews for all changes
+4. **Testing**: Comprehensive test coverage with Pytest (backend) and Vitest (frontend)
+
+### User-Specific Preferences
+1. **Git Branching**: Use `develop` as main development branch with feature branches from `develop`
+2. **Styling**: Preferred style fill: `#e1f5fe`, color: `#000000`; Alternative style fill: `#fff3e0`, color: `#000000` 

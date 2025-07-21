@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -9,6 +9,12 @@ from sqlmodel import Field, Relationship, SQLModel
 class Role(str, Enum):
     member = "member"
     treasurer = "treasurer"
+
+
+class SpecialUserType(str, Enum):
+    anonymous_donor = "anonymous_donor"
+    unknown_user = "unknown_user"
+    one_time_donor = "one_time_donor"
 
 
 class ReceiptStatus(str, Enum):
@@ -32,6 +38,18 @@ class TaxType(str, Enum):
     food = "food"
 
 
+class FeedbackCategory(str, Enum):
+    testimony = "testimony"
+    bug_report = "bug_report"
+    feature_request = "feature_request"
+
+
+class FeedbackStatus(str, Enum):
+    submitted = "submitted"
+    in_review = "in_review"
+    resolved = "resolved"
+
+
 class Organization(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(index=True)
@@ -46,19 +64,24 @@ class Organization(SQLModel, table=True):
     users: List["User"] = Relationship(back_populates="organization")
     receipts: List["Receipt"] = Relationship(back_populates="organization")
     payment_transactions: List["PaymentTransaction"] = Relationship(back_populates="organization")
+    feedback: List["Feedback"] = Relationship(back_populates="organization")
 
 
 class User(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     full_name: str
-    email: str = Field(unique=True, index=True)
-    hashed_password: str
+    email: Optional[str] = Field(default=None, unique=True, index=True)  # Nullable for special users
+    hashed_password: Optional[str] = Field(default=None)  # Nullable for special users
     role: Role = Field(default=Role.member)
+    contact_telephone: Optional[str] = Field(default=None)
+    is_special_user: bool = Field(default=False)
+    special_user_type: Optional[SpecialUserType] = Field(default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
     organization_id: uuid.UUID = Field(foreign_key="organization.id")
     organization: Organization = Relationship(back_populates="users")
     receipts: List["Receipt"] = Relationship(back_populates="user")
+    feedback: List["Feedback"] = Relationship(back_populates="user")
 
 
 class Receipt(SQLModel, table=True):
@@ -108,3 +131,18 @@ class PaymentTransaction(SQLModel, table=True):
 
     receipt_id: Optional[uuid.UUID] = Field(default=None, foreign_key="receipt.id")
     receipt: Optional[Receipt] = Relationship(back_populates="payment_transaction")
+
+
+class Feedback(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    category: FeedbackCategory
+    description: str
+    device_info: Optional[str] = Field(default=None)  # Store JSON as string
+    status: FeedbackStatus = Field(default=FeedbackStatus.submitted)
+    created_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+
+    user_id: uuid.UUID = Field(foreign_key="user.id")
+    organization_id: uuid.UUID = Field(foreign_key="organization.id")
+
+    user: User = Relationship(back_populates="feedback")
+    organization: Organization = Relationship(back_populates="feedback")

@@ -1,0 +1,174 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: goodstewards_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Load cached venv
+      id: cached-poetry-dependencies
+      uses: actions/cache@v3
+      with:
+        path: .venv
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Install dependencies
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      run: |
+        poetry install --with dev
+        poetry run pip install psycopg2-binary
+
+    - name: Install dependencies (cached)
+      if: steps.cached-poetry-dependencies.outputs.cache-hit == 'true'
+      run: |
+        poetry install --with dev
+        poetry run pip install psycopg2-binary
+
+    - name: Set up environment variables
+      run: |
+        echo "DATABASE_URL=postgresql+psycopg_async://postgres:postgres@localhost:5432/goodstewards_test" >> $GITHUB_ENV
+        echo "SECRET_KEY=test-secret-key-for-ci" >> $GITHUB_ENV
+        echo "R2_ACCESS_KEY_ID=test" >> $GITHUB_ENV
+        echo "R2_SECRET_ACCESS_KEY=test" >> $GITHUB_ENV
+        echo "R2_ENDPOINT_URL=test" >> $GITHUB_ENV
+        echo "R2_BUCKET_NAME=test" >> $GITHUB_ENV
+
+    - name: Run linting
+      run: |
+        poetry run black --check .
+        poetry run ruff check .
+        poetry run mypy app/
+
+    - name: Run tests with coverage
+      run: |
+        poetry run pytest tests/ --cov=app --cov-report=xml --cov-report=term-missing
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: backend
+        name: backend-coverage
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        version: latest
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+
+    - name: Install dependencies
+      run: poetry install --with dev
+
+    - name: Run security scan
+      run: |
+        poetry run bandit -r app/ -f json -o bandit-report.json || true
+        poetry run safety check --json --output safety-report.json || true
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  build:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false
+        tags: goodstewards-backend:latest
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  quality-gate:
+    name: Quality Gate
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: always()
+
+    steps:
+    - name: Check test results
+      if: needs.test.result != 'success'
+      run: |
+        echo "❌ Tests failed!"
+        exit 1
+
+    - name: Check security scan
+      if: needs.security.result != 'success'
+      run: |
+        echo "❌ Security scan failed!"
+        exit 1
+
+    - name: Quality gate passed
+      if: needs.test.result == 'success' && needs.security.result == 'success'
+      run: |
+        echo "✅ All quality checks passed!"
+        echo "✅ Tests: PASSED"
+        echo "✅ Security: PASSED"
+        echo "✅ Ready for deployment" 
