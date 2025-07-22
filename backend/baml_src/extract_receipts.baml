@@ -25,7 +25,6 @@ enum TaxType {
 
 class TaxBreakdown {
   tax_type TaxType
-  tax_rate float
   amount float
 }
 
