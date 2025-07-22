@@ -1,4 +1,5 @@
 import json
+import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
 from sqlmodel import Session, select
@@ -6,7 +7,7 @@ from datetime import date, datetime
 
 from app.core.auth import get_current_active_user, require_treasurer_role
 from app.core.db import get_session
-from app.models.models import User, Receipt, ReceiptStatus, ReceiptTaxBreakdown, TaxType
+from app.models.models import User, Receipt, ReceiptStatus, ReceiptTaxBreakdown, TaxType, PaymentMethod
 from app.services.baml_service import BAMLService
 from app.services.storage_service import R2StorageService
 
@@ -32,7 +33,10 @@ async def upload_receipt(
     Upload a receipt image for AI-powered data extraction.
     """
     # Validate file type
-    if not image.content_type.startswith("image/"):
+    if not image.content_type:
+        raise HTTPException(status_code=400, detail="File must have a content type")
+    content_type = image.content_type
+    if not content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="File must be an image")
     
     # Read image data
@@ -65,8 +69,8 @@ async def upload_receipt(
     # Create receipt record
     receipt = Receipt(
         image_url=image_url,
-        user_id=receipt_user_id,
-        organization_id=str(current_user.organization_id),
+        user_id=uuid.UUID(receipt_user_id),
+        organization_id=uuid.UUID(str(current_user.organization_id)),
         is_donation=is_donation,
         status=ReceiptStatus.processing
     )
@@ -80,7 +84,7 @@ async def upload_receipt(
         else:
             receipt.status = ReceiptStatus.pending
             receipt.vendor_name = extracted_data.vendor_name
-            receipt.purchase_date = extracted_data.purchase_date
+            receipt.purchase_date = datetime.strptime(extracted_data.purchase_date, "%Y-%m-%d").date() if extracted_data.purchase_date else None
             receipt.county = extracted_data.county
             receipt.subtotal_amount = extracted_data.subtotal_amount
             receipt.tax_amount = extracted_data.tax_amount
@@ -93,7 +97,7 @@ async def upload_receipt(
                     tax_breakdown = ReceiptTaxBreakdown(
                         tax_type=TaxType(breakdown.tax_type.value),
                         amount=breakdown.amount,
-                        receipt_id=str(receipt.id)
+                        receipt_id=receipt.id
                     )
                     session.add(tax_breakdown)
     
@@ -245,7 +249,7 @@ async def approve_receipt(
     
     # Update receipt
     receipt.status = ReceiptStatus.approved
-    receipt.payment_method = payment_method
+    receipt.payment_method = PaymentMethod(payment_method)
     receipt.payment_reference = payment_reference
     receipt.payment_proof_url = payment_proof_url
     receipt.approved_at = datetime.utcnow()
