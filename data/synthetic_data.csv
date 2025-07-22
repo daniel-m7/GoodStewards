@@ -1,0 +1,15 @@
+organization_name,organization_fein,user_full_name,user_email,user_role,receipt_image_url,receipt_vendor_name,receipt_total_amount
+Johnson-Sherman,30-7692218,Kimberly Johnson,treasurer@johnson-sherman.com,treasurer,,,
+Johnson-Sherman,30-7692218,Angela Bridges,user1@johnson-sherman.com,member,,,
+Johnson-Sherman,30-7692218,Angela Bridges,user1@johnson-sherman.com,member,C:\Projects\GoodStewards\data\receipt3.png,Cook Inc,208.64
+Johnson-Sherman,30-7692218,Angela Bridges,user1@johnson-sherman.com,member,C:\Projects\GoodStewards\data\receipt3.png,"Hogan, Harrison and Stephens",100.03
+Johnson-Sherman,30-7692218,Douglas Lucas,user2@johnson-sherman.com,member,,,
+Johnson-Sherman,30-7692218,Douglas Lucas,user2@johnson-sherman.com,member,C:\Projects\GoodStewards\data\receipt3.png,"Moore, Valencia and Smith",167.91
+Johnson-Sherman,30-7692218,Douglas Lucas,user2@johnson-sherman.com,member,C:\Projects\GoodStewards\data\receipt1.jpg,Fitzgerald Ltd,270.76
+Christensen-Reyes,67-5484328,Jeffrey Oconnell,treasurer@christensen-reyes.com,treasurer,,,
+Christensen-Reyes,67-5484328,Anthony Miller,user1@christensen-reyes.com,member,,,
+Christensen-Reyes,67-5484328,Anthony Miller,user1@christensen-reyes.com,member,C:\Projects\GoodStewards\data\receipt3.png,Morgan-Little,351.71
+Christensen-Reyes,67-5484328,Anthony Miller,user1@christensen-reyes.com,member,C:\Projects\GoodStewards\data\receipt2.jpg,Lopez PLC,154.88
+Christensen-Reyes,67-5484328,David Harris,user2@christensen-reyes.com,member,,,
+Christensen-Reyes,67-5484328,David Harris,user2@christensen-reyes.com,member,C:\Projects\GoodStewards\data\receipt3.png,"Wagner, Stewart and Garcia",236.19
+Christensen-Reyes,67-5484328,David Harris,user2@christensen-reyes.com,member,C:\Projects\GoodStewards\data\receipt3.png,"Wood, Johnson and Robertson",337.54
