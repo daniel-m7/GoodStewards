@@ -39,10 +39,13 @@ def create_test_engine():
     if database_url.startswith("postgresql+psycopg_async://"):
         database_url = database_url.replace("postgresql+psycopg_async://", "postgresql://")
     
-    # Replace Docker container name with localhost when running outside Docker
-    if "db:5432" in database_url:
+    # Only replace Docker container name with localhost when running outside Docker
+    # Check if we're running inside Docker by looking for the container environment
+    if "db:5432" in database_url and not os.path.exists("/.dockerenv"):
         database_url = database_url.replace("db:5432", "localhost:5432")
         print("🔄 Replaced 'db' with 'localhost' for local connection")
+    elif "db:5432" in database_url:
+        print("🐳 Running inside Docker - using 'db' container name")
     
     print(f"🔗 Connecting to database: {database_url}")
     
