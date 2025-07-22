@@ -24,13 +24,7 @@ async def setup_database():
     print("📋 Creating database tables...")
     create_all(engine)
     print("✅ Tables created successfully!")
-    
-    # Load test data
-    print("📊 Loading test data...")
-    from load_test_data import load_all_test_data
-    load_all_test_data()
-    print("✅ Test data loaded successfully!")
-    
+        
     print("🎉 Database setup complete!")
 
 if __name__ == "__main__":
