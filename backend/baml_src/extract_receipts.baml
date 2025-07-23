@@ -83,7 +83,7 @@ test Test_Receipt {
 functions [ExtractReceiptData]
   args {
     receipt {
-      url "https://github.com/daniel-m7/GoodStewards/raw/main/data/1-receipt.png"
+      url "https://github.com/daniel-m7/GoodStewards/raw/main/data/receipt-1.png"
     }
   }
 }

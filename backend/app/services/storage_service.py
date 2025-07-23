@@ -10,14 +10,20 @@ class R2StorageService:
     """Service for Cloudflare R2 storage operations."""
     
     def __init__(self):
-        self.s3_client = boto3.client(
-            's3',
-            endpoint_url=settings.R2_ENDPOINT_URL,
-            aws_access_key_id=settings.R2_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.R2_SECRET_ACCESS_KEY,
-            region_name='auto'  # R2 doesn't use regions like S3
-        )
-        self.bucket_name = settings.R2_BUCKET_NAME
+        # For development, use mock storage if R2 credentials are not configured
+        if not settings.R2_ENDPOINT_URL or not settings.R2_ACCESS_KEY_ID or not settings.R2_SECRET_ACCESS_KEY:
+            self.s3_client = None
+            self.bucket_name = "mock-bucket"
+            print("Using mock storage service for development")
+        else:
+            self.s3_client = boto3.client(
+                's3',
+                endpoint_url=settings.R2_ENDPOINT_URL,
+                aws_access_key_id=settings.R2_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.R2_SECRET_ACCESS_KEY,
+                region_name='auto'  # R2 doesn't use regions like S3
+            )
+            self.bucket_name = settings.R2_BUCKET_NAME
     
     async def upload_image(self, image_data: bytes, content_type: str = "image/jpeg") -> Optional[str]:
         """
@@ -34,6 +40,10 @@ class R2StorageService:
             # Generate unique filename
             file_extension = content_type.split('/')[-1]
             filename = f"receipts/{uuid.uuid4()}.{file_extension}"
+            
+            # For development, return mock URL if R2 is not configured
+            if not self.s3_client:
+                return f"https://mock-storage.example.com/{self.bucket_name}/{filename}"
             
             # Upload to R2
             self.s3_client.put_object(
@@ -63,6 +73,10 @@ class R2StorageService:
             Presigned URL if successful, None otherwise
         """
         try:
+            # For development, return mock URL if R2 is not configured
+            if not self.s3_client:
+                return f"https://mock-storage.example.com/{self.bucket_name}/{object_key}?expires={expires_in}"
+            
             url = self.s3_client.generate_presigned_url(
                 'get_object',
                 Params={'Bucket': self.bucket_name, 'Key': object_key},
@@ -85,6 +99,11 @@ class R2StorageService:
             True if deletion successful, False otherwise
         """
         try:
+            # For development, return success if R2 is not configured
+            if not self.s3_client:
+                print(f"Mock deletion of {object_key}")
+                return True
+            
             self.s3_client.delete_object(
                 Bucket=self.bucket_name,
                 Key=object_key

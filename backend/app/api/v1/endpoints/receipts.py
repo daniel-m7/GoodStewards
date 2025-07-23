@@ -2,7 +2,8 @@ import json
 import uuid
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, Query
-from sqlmodel import Session, select
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 from datetime import date, datetime
 
 from app.core.auth import get_current_active_user, require_treasurer_role
@@ -27,7 +28,7 @@ async def upload_receipt(
     is_donation: bool = Form(False),
     member_id: Optional[str] = Form(None),
     current_user: User = Depends(get_current_active_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     """
     Upload a receipt image for AI-powered data extraction.
@@ -62,7 +63,8 @@ async def upload_receipt(
             User.id == member_id,
             User.organization_id == current_user.organization_id
         )
-        member = session.exec(statement).first()
+        result = await session.exec(statement)
+        member = result.first()
         if not member:
             raise HTTPException(status_code=404, detail="Member not found")
     
@@ -95,7 +97,7 @@ async def upload_receipt(
             if extracted_data.tax_breakdowns:
                 for breakdown in extracted_data.tax_breakdowns:
                     tax_breakdown = ReceiptTaxBreakdown(
-                        tax_type=TaxType(breakdown.tax_type.value),
+                        tax_type=TaxType(breakdown.tax_type.value.lower()),
                         amount=breakdown.amount,
                         receipt_id=receipt.id
                     )
@@ -120,7 +122,7 @@ async def get_receipts(
     limit: int = Query(100, ge=1, le=1000),
     offset: int = Query(0, ge=0),
     current_user: User = Depends(get_current_active_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     """
     Get receipts with filtering and pagination.
@@ -148,7 +150,8 @@ async def get_receipts(
     # Apply pagination
     query = query.offset(offset).limit(limit)
     
-    receipts = session.exec(query).all()
+    result = await session.exec(query)
+    receipts = result.all()
     
     return [
         {
@@ -168,7 +171,7 @@ async def get_receipts(
 async def get_receipt(
     receipt_id: str,
     current_user: User = Depends(get_current_active_user),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     """
     Get detailed receipt information.
@@ -228,7 +231,7 @@ async def approve_receipt(
     payment_reference: str,
     payment_proof_url: Optional[str] = None,
     current_user: User = Depends(require_treasurer_role),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     """
     Approve a receipt (Treasurer only).
@@ -269,7 +272,7 @@ async def reject_receipt(
     receipt_id: str,
     reason: str,
     current_user: User = Depends(require_treasurer_role),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ):
     """
     Reject a receipt (Treasurer only).
@@ -299,4 +302,19 @@ async def reject_receipt(
         "id": str(receipt.id),
         "status": receipt.status,
         "rejection_reason": reason
-    } 
+    }
+
+@router.delete("/clear-all")
+async def clear_all_receipts(session: AsyncSession = Depends(get_session)):
+    """Clear all receipts from the database (for testing purposes)."""
+    try:
+        # Delete all receipts
+        result = await session.exec(select(Receipt))
+        receipts = result.all()
+        for receipt in receipts:
+            await session.delete(receipt)
+        await session.commit()
+        return {"message": f"All {len(receipts)} receipts cleared successfully"}
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to clear receipts: {str(e)}") 
