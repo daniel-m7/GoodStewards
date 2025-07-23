@@ -19,11 +19,6 @@ COPY pyproject.toml poetry.lock* ./
 # Do not create a virtual environment in the container
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
-# Copy the rest of the application code
-COPY ./app ./app
-COPY load_test_data.py ./
-COPY tests/ ./tests/
-
 # Expose the port the app runs on
 EXPOSE 8000
 

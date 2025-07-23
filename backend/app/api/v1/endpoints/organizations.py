@@ -1,6 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.auth import get_current_active_user
 from app.core.db import get_session
@@ -100,4 +101,19 @@ async def update_organization(
             "state": organization.state,
             "zip_code": organization.zip_code
         }
-    } 
+    }
+
+@router.delete("/clear-all")
+async def clear_all_organizations(session: AsyncSession = Depends(get_session)):
+    """Clear all organizations from the database (for testing purposes)."""
+    try:
+        # Delete all organizations
+        result = await session.exec(select(Organization))
+        organizations = result.all()
+        for organization in organizations:
+            await session.delete(organization)
+        await session.commit()
+        return {"message": f"All {len(organizations)} organizations cleared successfully"}
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to clear organizations: {str(e)}") 

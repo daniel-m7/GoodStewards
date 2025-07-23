@@ -4,7 +4,8 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlmodel import Session, select
+from sqlmodel import select
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 from app.core.config import settings
 from app.core.db import get_session
@@ -38,7 +39,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
-    session: Session = Depends(get_session)
+    session: AsyncSession = Depends(get_session)
 ) -> User:
     """Get the current authenticated user."""
     credentials_exception = HTTPException(
@@ -49,7 +50,7 @@ async def get_current_user(
     
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-        user_id: str = payload.get("sub")
+        user_id = payload.get("sub")
         if user_id is None:
             raise credentials_exception
     except JWTError:
@@ -57,7 +58,8 @@ async def get_current_user(
     
     # Get user from database
     statement = select(User).where(User.id == user_id)
-    user = session.exec(statement).first()
+    result = await session.exec(statement)
+    user = result.first()
     
     if user is None:
         raise credentials_exception

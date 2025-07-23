@@ -18,6 +18,13 @@ poetry run ruff check --fix .
 poetry run mypy app/
 ```
 
+### Running the Backend
+To run the backend server for development, use the following command. The server will automatically reload when code changes are detected.
+
+```bash
+poetry run uvicorn app.main:app --reload
+```
+
 ### Full Build Process
 ```bash
 # Linux/Mac
@@ -56,38 +63,43 @@ The build process includes the following stages:
 - Multi-stage Docker build
 - Optimized for production deployment
 
-## 🧪 Testing
+## 🧪 Testing Workflow
 
-### Test Structure
-```
-tests/
-├── __init__.py          # Test package
-├── conftest.py          # Pytest configuration and fixtures
-├── test_main.py         # Main application tests
-├── test_auth.py         # Authentication endpoint tests
-├── test_receipts.py     # Receipt endpoint tests
-└── test_simple.py       # Simple app creation tests
-```
+This section outlines the standard testing workflow, which simulates a common user journey from registration to payment confirmation. The `api_load_basic_workflow_data.py` script is used to execute this workflow against a running API.
 
-### Running Tests
+### Prerequisites
+1. The backend API server must be running.
+2. The `synthetic_data.csv` file must be generated using `generate_synthetic_data.py`.
+
+### Workflow Steps
+The script executes the following sequence of actions:
+
+1.  **Organization and Treasurer Registration**:
+    - Creates a new organization.
+    - Registers a user with the 'treasurer' role for that organization.
+
+2.  **Member User Registration**:
+    - Registers a standard 'member' user within the same organization.
+
+3.  **User Submits Receipt**:
+    - The 'member' user logs in to get an authentication token.
+    - The user submits a receipt by providing vendor details, amount, and an image.
+
+4.  **Treasurer Approves Receipt**:
+    - The 'treasurer' for the organization logs in.
+    - The treasurer retrieves the submitted receipt and approves it.
+
+5.  **Treasurer Confirms Payment**:
+    - After approval, the treasurer marks the receipt as paid, providing a confirmation number.
+
+### Running the Workflow Test
+To execute this entire workflow, run the following command:
+
 ```bash
-# Run all tests
-poetry run pytest tests/
-
-# Run with coverage
-poetry run pytest tests/ --cov=app --cov-report=html
-
-# Run specific test file
-poetry run pytest tests/test_main.py
-
-# Run with verbose output
-poetry run pytest tests/ -v
+python api_load_basic_workflow_data.py
 ```
 
-### Test Coverage
-- **Target**: 80%+ code coverage
-- **Reports**: HTML and terminal output
-- **Location**: `htmlcov/index.html`
+The script will print the status of each step to the console, indicating success or failure for each API call.
 
 ## 🔧 CI/CD Pipeline
 

@@ -1,6 +1,7 @@
 from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select
+from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy import or_
 from uuid import UUID
 
@@ -9,6 +10,13 @@ from app.core.db import get_session
 from app.models.models import User, Organization, SpecialUserType, Role
 
 router = APIRouter()
+
+@router.get("/health-check")
+async def health_check():
+    """
+    Check if the API is running.
+    """
+    return {"status": "ok"}
 
 @router.get("/me")
 async def get_current_user_info(current_user: User = Depends(get_current_active_user)):
@@ -197,4 +205,19 @@ async def update_user_role(
         "message": "User role updated successfully",
         "user_id": str(user.id),
         "new_role": user.role
-    } 
+    }
+
+@router.delete("/clear-all")
+async def clear_all_users(session: AsyncSession = Depends(get_session)):
+    """Clear all users from the database (for testing purposes)."""
+    try:
+        # Delete all users
+        result = await session.exec(select(User))
+        users = result.all()
+        for user in users:
+            await session.delete(user)
+        await session.commit()
+        return {"message": f"All {len(users)} users cleared successfully"}
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to clear users: {str(e)}") 
