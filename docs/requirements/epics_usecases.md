@@ -28,7 +28,61 @@ This document provides a comprehensive overview of the GoodStewards project, enc
 *   **DevOps Engineer (DO):** Manages infrastructure, CI/CD, deployment.
 *   **Gemini-CLI Agent (AI-Agent):** Assists with code generation, documentation, and task automation.
 
-## 4. Epics and Use Cases
+## 4. User Personas
+
+Our solution is designed for two primary user personas within small to medium-sized non-profit organizations in North Carolina (typically with 50-500 members).
+
+### Primary Target Audience: The Volunteer/Part-Time Treasurer
+
+*   **Role:** Responsible for the organization's finances, including bookkeeping, budgeting, and reimbursements.
+*   **Pain Points:**
+    *   Overwhelmed by the manual, paper-based process of collecting and tracking receipts.
+    *   Finds the process of filling out Form E-585 and associated schedules complex and time-consuming.
+    *   Lacks a centralized system for a clear audit trail of expenses and reimbursements.
+    *   Spends personal time on administrative tasks like writing and delivering physical checks.
+*   **Goals:**
+    *   To efficiently and accurately manage the organization's finances.
+    *   To maximize the funds available to the non-profit's mission.
+    *   To reduce the time spent on administrative tasks and focus on more strategic financial oversight.
+    *   To have a clear, reportable view of the organization's spending.
+
+### Secondary Target Audience: The Organization Member
+
+*   **Role:** A member who incurs expenses or makes donations on behalf of the organization.
+*   **Pain Points:**
+    *   The hassle of saving and physically handing in receipts to the treasurer.
+    *   Forgetting or choosing not to submit receipts for small donations, resulting in lost tax data for the organization.
+    *   The reimbursement process is slow and requires meeting the treasurer in person.
+*   **Goals:**
+    *   To have a quick and easy way to submit expenses from their phone.
+    *   To be reimbursed promptly and electronically without manual follow-up.
+    *   To contribute to the organization's financial health with minimal personal effort.
+
+### System Administrator Persona: The Admin
+
+*   **Role:** A system administrator responsible for overseeing the entire GoodStewards platform.
+*   **Pain Points:**
+    *   Lack of a centralized view to monitor the health and activity of all non-profit organizations using the service.
+    *   Difficulty in managing user accounts and organization subscriptions.
+    *   Time-consuming to manually pull system-wide metrics and user feedback.
+*   **Goals:**
+    *   To have a global dashboard with a comprehensive overview of all organizations, treasurers, members, and receipts.
+    *   To efficiently manage organizations, user roles, and subscription plans.
+    *   To monitor system health, track key metrics, and access user feedback to guide platform improvements.
+
+### Tertiary Target Audience: The Admin
+
+*   **Role:** A GoodStewards administrator responsible for managing the platform.
+*   **Pain Points:**
+    *   Difficulty in managing a large number of organizations and users.
+    *   Lack of a centralized view of platform activity.
+    *   Time-consuming to troubleshoot issues without a global view of the system.
+*   **Goals:**
+    *   To have a single dashboard to manage all aspects of the platform.
+    *   To be able to quickly identify and resolve issues.
+    *   To have a clear overview of the platform's health and performance.
+
+## 5. Epics and Use Cases
 
 ### Epic 1: Automate Tax Refund Claims
 
@@ -91,11 +145,11 @@ This document provides a comprehensive overview of the GoodStewards project, enc
     *   All feedback shall be persisted in a dedicated database table.
     *   An email notification shall be sent to a designated support inbox upon new feedback submission.
 
-## 6. E-585 Report Generation Design
+## 7. E-585 Report Generation Design
 
 This section outlines the plan and prerequisite steps for calculating the required fields and generating a completed Form E-585 PDF.
 
-### 6.1. Data Prerequisites
+### 7.1. Data Prerequisites
 
 To accurately generate the E-585 form, the following data must be available in the system for a given reporting period (e.g., the last six months).
 
@@ -113,7 +167,7 @@ To accurately generate the E-585 form, the following data must be available in t
     *   A collection of all `approved` receipts within the reporting period.
     *   For each receipt, a clear breakdown of the tax amounts into `state`, `county`, `transit`, and `food` categories, stored in the `receipt_tax_breakdowns` table.
 
-### 6.2. Calculation Logic for Form E-585 Fields
+### 7.2. Calculation Logic for Form E-585 Fields
 
 The following outlines the logic for calculating each key field on the form. This process will be executed by a backend service when the treasurer initiates a new report.
 
@@ -143,22 +197,22 @@ The following outlines the logic for calculating each key field on the form. Thi
     *   **County 2.25% Tax:** Sum of `amount` from `receipt_tax_breakdowns` where `tax_type` is `county` and the tax rate is 2.25%.
     *   **Transit 0.50% Tax:** Sum of `amount` from `receipt_tax_breakdowns` where `tax_type` is `transit`.
 
-### 6.3. Supplementary Form Generation: E-536R
+### 7.3. Supplementary Form Generation: E-536R
 
 If an organization has paid taxes in more than one county during the reporting period, the system must also generate Form E-536R.
 
-### 6.3.1. Triggering Condition:
+#### 7.3.1. Triggering Condition:
 *   The system will query all `approved` receipts for the reporting period and identify the number of distinct counties from the `receipts.county` field. If the count is greater than one, the E-536R generation process is triggered.
 
-### 6.3.2. Calculation Logic for E-536R Fields:
+#### 7.3.2. Calculation Logic for E-536R Fields:
 *   The form will be populated by grouping all `receipt_tax_breakdowns` by county.
 *   For each county, the system will sum the `amount` for each `tax_type` (`county` and `transit`) and populate the corresponding fields on the E-536R form.
 
-### 6.3.3. PDF Generation Process:
+#### 7.3.3. PDF Generation Process:
 *   The E-536R will be generated as a separate but linked PDF alongside the main E-585 form.
 *   The treasurer will be prompted to download both documents, as they must be submitted together.
 
-### 6.4. Field-by-Field Calculation Logic (E-585 Details):
+### 7.4. Field-by-Field Calculation Logic (E-585 Details):
 
 1.  **Name of Taxing County:**
     *   **Rule:** If all taxes were paid in only one county, enter the name of that county. If you made purchases and paid county & transit tax in more than one county, do not list a county on Line 1 and attach Form E-536R.
@@ -196,18 +250,18 @@ If an organization has paid taxes in more than one county during the reporting p
     *   **Logic (County 2.25% Tax):** `SUM(receipt_tax_breakdowns.amount)` where `tax_type` = `county` and the tax rate is 2.25%.
     *   **Logic (Transit 0.50% Tax):** `SUM(receipt_tax_breakdowns.amount)` where `tax_type` = `transit`.
 
-### 6.5. PDF Generation Process (High-Level):
+### 7.5. PDF Generation Process (High-Level):
 
 1.  **Initiation:** The treasurer selects a reporting period and clicks a "Generate E-585 Report" button in the web dashboard.
 2.  **Data Aggregation:** The backend service fetches all `approved` receipts and their corresponding `receipt_tax_breakdowns` for the selected period.
-3.  **Calculation:** The service executes the calculation logic defined in Section 6.2 to compute the value for each field.
+3.  **Calculation:** The service executes the calculation logic defined in Section 7.2 to compute the value for each field.
 4.  **PDF Population:** The service uses a PDF library (e.g., `pdf-lib` for Node.js or `PyPDF2` for Python) to programmatically fill in the fields of a template E-585 PDF form. The system will only pre-fill the following fields:
     *   Organization Name
     *   Organization Address
     *   Period Beginning and Period Ending dates
 5.  **Download:** The generated, partially-completed PDF is then made available for the treasurer to download. The treasurer must then manually fill in the remaining sensitive information (Account ID, Federal Employer ID, contact details, etc.) before signing and mailing the form.
 
-## 7. Cross-Cutting Concerns
+## 8. Cross-Cutting Concerns
 
 *   **Metrics Capture & Analysis:**
     *   **Task C.1.1:** Define key performance indicators (KPIs) for user engagement, refund amounts, processing efficiency, and financial performance.
@@ -221,6 +275,40 @@ If an organization has paid taxes in more than one county during the reporting p
     *   **Task C.3.1:** Establish a formal beta testing program for new features and major releases to gather early feedback and ensure quality.
     *   **Assigned Roles:** PO, QA
 
-## 8. Tax Law Principles
+## 9. Tax Law Principles
 
 General tax law principles and NCDOR practices suggest that refund claims may be subject to a statute of limitations, typically three years from the date the tax was paid or the due date of the return, whichever is later, as outlined in N.C. Gen. Stat. § 105-241.6. This could imply that nonprofits might be able to file refund claims for up to three years prior, covering six semiannual periods, provided the claims are within the statutory period and accompanied by proper documentation.
+
+
+## 10. Strategic Roadmap
+
+### Phase 1: MVP (Minimum Viable Product) - (Q3 2025)
+
+*   **Focus:** Core functionality for a single non-profit.
+*   **Key Deliverables:**
+    *   Web dashboard for the treasurer.
+    *   Mobile app for members (receipt upload only).
+    *   AI-powered OCR for data extraction.
+    *   Manual review and correction of extracted data.
+    *   Automated generation of Form E-585.
+    *   Basic user management.
+*   **Goal:** Validate the core value proposition and gather feedback from a small group of beta testers.
+
+### Phase 2: Public Launch - (Q4 2025)
+
+*   **Focus:** Scalability, security, and user experience enhancements.
+*   **Key Deliverables:**
+    *   Automated reimbursement workflow (Zelle/check tracking).
+    *   Multi-organization support.
+    *   Enhanced reporting and analytics.
+    *   Public launch to all North Carolina non-profits.
+*   **Goal:** Establish a market presence and begin acquiring a wider user base.
+
+### Phase 3: Expansion & Growth - (2026 and beyond)
+
+*   **Focus:** Expanding the feature set and exploring new markets.
+*   **Key Deliverables:**
+    *   Integration with accounting software (QuickBooks, Xero).
+    *   Advanced features like budget tracking and financial forecasting.
+    *   Exploration of other states with similar tax refund programs.
+*   **Goal:** Become the leading financial management tool for non-profits in the region and beyond.
