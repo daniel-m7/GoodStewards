@@ -1,12 +1,20 @@
-# GoodStewards Mobile App UX and Workflow Plan
+# GoodStewards Member UX and Mobile Workflow Plan
 
 ## 1. Document Purpose
 
 This document provides a comprehensive plan for the user experience (UX), user flows, and core technical workflow for the member-facing mobile web application. Its purpose is to guide design and development, ensuring a consistent and intuitive experience for all user roles. For a broader overview of project epics, use cases, and the overall roadmap, please refer to the [Project Overview](./epics_usecases_roadmap.md) document.
 
-## 2. Target Personas
+## 2. UI/UX Principles
 
-### 2a. The Non-Profit Member
+*   **Mobile-First:** Designed exclusively for a seamless mobile experience.
+*   **Speed & Simplicity:** The entire process from opening the app to submitting a receipt should take less than 30 seconds.
+*   **Minimalism:** Only the most essential information and actions are presented to the user.
+*   **"Capture and Go":** The design philosophy is centered around a fast, "fire-and-forget" way for a user to submit a receipt the moment they get it.
+*   **No Manual Entry:** The member is not required to enter any data manually. The AI handles all data extraction on the backend.
+
+## 3. Target Personas
+
+### 3a. The Non-Profit Member
 
 *   **Who they are:** A member of a non-profit organization who occasionally incurs expenses or makes small donations on its behalf.
 *   **Core Motivation:** To contribute to their organization's mission with minimal personal friction.
@@ -18,7 +26,7 @@ This document provides a comprehensive plan for the user experience (UX), user f
     *   A fast, simple "fire-and-forget" way to submit a receipt the moment they get it.
     *   To be reimbursed quickly and electronically.
 
-### 2b. The Non-Profit Treasurer
+### 3b. The Non-Profit Treasurer
 
 *   **Who they are:** The financial administrator for the non-profit. They are responsible for collecting all receipts, ensuring compliance, and filing for tax refunds.
 *   **Core Motivation:** To maximize the organization's tax refund by capturing every eligible expense, while minimizing the administrative burden on themselves and members.
@@ -31,7 +39,7 @@ This document provides a comprehensive plan for the user experience (UX), user f
     *   To easily attribute a submission to the correct member.
     *   To reduce their own data entry workload.
 
-## 3. End-to-End User Journey
+## 4. End-to-End User Journey
 
 The user journey is split into two distinct phases: a one-time onboarding process and the recurring core usage loop.
 
@@ -65,7 +73,7 @@ This is the primary workflow for an authenticated, registered user. The design p
 5.  **Review Selections:** The user is shown thumbnails of all selected receipts, with details like total and sales tax for each. This allows them to spot and remove any accidental selections.
 6.  **Choose Submission Type:** Before submitting, the user will be presented with a clear choice: "Reimburse" or "Donate".
 7.  **Confirm Submission:** After selecting the submission type, the user reviews a summary of the total expenses and sales tax for all receipts to be redeemed. They then tap a single "Submit" button to confirm. The app immediately begins submitting the images in the background.
-8.  **Receive Feedback:** The app provides immediate visual feedback that the submissions are processing. The user can safely navigate away or close the app; the process will continue.
+8.  **Receive Feedback:** The app provides immediate visual feedback that the submissions are processing. The user can safely navigate away or a close the app; the process will continue.
 9.  **View Submission:** The new submissions appear at the top of their Dashboard list with a "Pending" status, confirming the action was successful and closing the loop.
 
 ```mermaid
@@ -97,7 +105,7 @@ graph TD
     end
 ```
 
-## 4. Screen-by-Screen Breakdown & Mockups
+## 5. Screen-by-Screen Breakdown & Mockups
 
 ```mermaid
 graph TD
@@ -124,8 +132,6 @@ graph TD
         O --> P["View Submission"]
     end
 ```
-
-## 4. Screen-by-Screen Breakdown & Mockups
 
 ### Screen A: Login / Registration Screen
 *   **Purpose:** To provide a single, clear entry point for both new and returning users, prioritizing modern, secure authentication.
@@ -283,7 +289,7 @@ graph TD
 +--------------------------------------+
 ```
 
-## 5. Core Technical Workflow: Receipt Submission
+## 6. Core Technical Workflow: Receipt Submission
 
 This describes the step-by-step process that occurs when a user hits the "Submit" button.
 
@@ -304,7 +310,7 @@ This describes the step-by-step process that occurs when a user hits the "Submit
     *   It updates the corresponding record in the PostgreSQL receipts table with the extracted data and changes the status from `processing` to `pending` (awaiting treasurer approval).
 6.  **Frontend - UI Update:** The member's dashboard, upon being loaded or refreshed, will fetch the latest status for their submissions. For a more advanced experience, a WebSocket connection could push the status update (`processing` → `pending`) to the client in real-time.
 
-## 6. Core Technical Workflow: Feedback Submission
+## 7. Core Technical Workflow: Feedback Submission
 
 This describes the step-by-step process for feedback submission.
 
@@ -316,3 +322,34 @@ This describes the step-by-step process for feedback submission.
     *   It creates a new record in a dedicated `feedback` table in PostgreSQL, storing the feedback type, message, user ID, and any captured system information.
     *   It sends an email notification to the designated support inbox (e.g., `support@goodstewards.app`) with the feedback details.
 4.  **Frontend - Confirmation:** The app displays a confirmation message to the user, thanking them for their feedback.
+
+
+## 8. Core Technical Workflow: User Management
+
+This describes the process for managing users within an organization.
+
+1.  **User Action:** An administrator or treasurer with appropriate permissions accesses the user management section of the web dashboard.
+2.  **Frontend:** The dashboard provides options to:
+    *   **Invite New Users:** An admin can enter an email address to send an invitation link.
+    *   **Manage Roles:** An admin can change a user's role (e.g., from "Member" to "Treasurer").
+    *   **Deactivate Users:** An admin can deactivate a user's account, preventing them from logging in.
+3.  **Backend - API Endpoints:**
+    *   `/api/users/invite`: Sends an invitation email with a unique registration token.
+    *   `/api/users/{user_id}/role`: Updates the user's role in the database.
+    *   `/api/users/{user_id}/deactivate`: Sets an `is_active` flag to `false` for the user in the database.
+4.  **Frontend - UI Updates:** The user management dashboard reflects the changes in real-time.
+
+## 9. Core Technical Workflow: Organization Management
+
+This describes the process for managing organization settings.
+
+1.  **User Action:** An administrator accesses the organization settings section of the web dashboard.
+2.  **Frontend:** The dashboard provides options to:
+    *   **Update Organization Name:** Change the display name of the organization.
+    *   **Manage Billing:** View subscription status and payment history.
+    *   **Configure Integrations:** Set up integrations with accounting software (e.g., QuickBooks).
+3.  **Backend - API Endpoints:**
+    *   `/api/organizations/{org_id}`: Updates organization details.
+    *   `/api/organizations/{org_id}/billing`: Interfaces with the payment provider (e.g., Stripe).
+    *   `/api/organizations/{org_id}/integrations`: Manages API keys and settings for third-party integrations.
+4.  **Frontend - UI Updates:** The organization settings dashboard reflects the changes.

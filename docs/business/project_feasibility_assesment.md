@@ -8,7 +8,31 @@ This is a **moderately feasible** startup idea with a **high potential for succe
 
 *   **Total Addressable Market (TAM):** North Carolina has over 39,000 registered non-profit organizations. While not all will be eligible or have the volume of expenses to make this a priority, a significant portion represents the TAM. The ~$2,000 per year for a 100-member organization is a good starting point for a rough estimate, but the actual amount will vary greatly. A more accurate TAM calculation would require more data on the average expenses of these non-profits.
 *   **Served Available Market (SAM):** The initial target market would likely be small to medium-sized non-profits where the treasurer is a volunteer or part-time employee, making them more likely to be overwhelmed by the manual process. Larger non-profits might have dedicated accounting staff or more sophisticated systems in place.
-*   **Target Market:** The ideal customer profile is a non-profit organization in North Carolina with 50-500 members, regular expenses, and a desire to maximize its available funds. The key user personas are the non-profit treasurer and the members.
+*   **Target Audience:** Our solution is designed for two primary user personas within small to medium-sized non-profit organizations in North Carolina (typically with 50-500 members).
+
+    *   **Primary Target Audience: The Volunteer/Part-Time Treasurer**
+        *   **Role:** Responsible for the organization's finances, including bookkeeping, budgeting, and reimbursements.
+        *   **Pain Points:**
+            *   Overwhelmed by the manual, paper-based process of collecting and tracking receipts.
+            *   Finds the process of filling out Form E-585 and associated schedules complex and time-consuming.
+            *   Lacks a centralized system for a clear audit trail of expenses and reimbursements.
+            *   Spends personal time on administrative tasks like writing and delivering physical checks.
+        *   **Goals:**
+            *   To efficiently and accurately manage the organization's finances.
+            *   To maximize the funds available to the non-profit's mission.
+            *   To reduce the time spent on administrative tasks and focus on more strategic financial oversight.
+            *   To have a clear, reportable view of the organization's spending.
+
+    *   **Secondary Target Audience: The Organization Member**
+        *   **Role:** A member who incurs expenses or makes donations on behalf of the organization.
+        *   **Pain Points:**
+            *   The hassle of saving and physically handing in receipts to the treasurer.
+            *   Forgetting or choosing not to submit receipts for small donations, resulting in lost tax data for the organization.
+            *   The reimbursement process is slow and requires meeting the treasurer in person.
+        *   **Goals:**
+            *   To have a quick and easy way to submit expenses from their phone.
+            *   To be reimbursed promptly and electronically without manual follow-up.
+            *   To contribute to the organization's financial health with minimal personal effort.
 *   **Competition:**
     *   **Manual/In-House:** The biggest competitor is the status quo – non-profits continuing to do this manually or not at all.
     *   **Existing Expense Management Software:** Tools like Expensify, Zoho Expense, or Ramp could be used for receipt capture and expense management, but they are not tailored to the specific nuances of the North Carolina sales tax refund for non-profits. They would not automatically fill out Form E-585.
